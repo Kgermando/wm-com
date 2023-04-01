@@ -60,7 +60,7 @@ AppBar headerBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey,
                 }),
     title: Responsive.isMobile(context)
         ? Container()
-        : (currentRoute == HomeRoutes.home) ? InkWell(
+        : (currentRoute != HomeRoutes.home) ? InkWell(
             onTap: () {
               Get.back();
             },
@@ -154,70 +154,103 @@ AppBar headerBar(BuildContext context, GlobalKey<ScaffoldState> scaffoldKey,
                           style: const TextStyle(color: Colors.white)),
                       child: Icon(Icons.note_alt_outlined,
                           size: (Responsive.isDesktop(context) ? 25 : 20)),
-                    ))),
-            IconButton(
-                tooltip: 'Annuaire',
-                onPressed: () {
-                  Get.toNamed(MarketingRoutes.marketingAnnuaire);
-                },
-                icon: const Icon(Icons.contact_phone)),
+                    ))), 
             if (profilController.user.matricule.contains("Support"))
-              IconButton(
-                  tooltip: 'Add update',
-                  onPressed: () {
-                    Get.bottomSheet(
-                        useRootNavigator: true,
-                        Scaffold(
-                          body: Container(
-                            // color: Colors.amber.shade100,
-                            padding: const EdgeInsets.all(p20),
-                            child: Form(
-                              key: updateController.formKey,
-                              child: ListView(
-                                shrinkWrap: true,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      Expanded(
-                                          child: Text("Nouvelle mise à jour",
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineSmall)),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: p20,
-                                  ),
-                                  versionWidget(updateController),
-                                  motifWidget(updateController),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      fichierWidget(context, updateController),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: p20,
-                                  ),
-                                  Obx(() => BtnWidget(
-                                      title: 'Soumettre',
-                                      press: () {
-                                        final form = updateController
-                                            .formKey.currentState!;
-                                        if (form.validate()) {
-                                          updateController.submit();
-                                          form.reset();
-                                          Navigator.of(context).pop();
-                                        }
-                                      },
-                                      isLoading: updateController.isLoading))
-                                ],
-                              ),
+            IconButton(
+                tooltip: 'Add update',
+                onPressed: () {
+                  Get.bottomSheet(
+                      useRootNavigator: true,
+                      Scaffold(
+                        body: Container(
+                          // color: Colors.amber.shade100,
+                          padding: const EdgeInsets.all(p20),
+                          child: Form(
+                            key: updateController.formKey,
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: <Widget>[
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        child: Text("Nouvelle mise à jour",
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineSmall)),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: p20,
+                                ),
+                                versionWidget(updateController),
+                                motifWidget(updateController),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    fichierWidget(context, updateController),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: p20,
+                                ),
+                                Obx(() => BtnWidget(
+                                    title: 'Soumettre',
+                                    press: () {
+                                      final form = updateController
+                                          .formKey.currentState!;
+                                      if (form.validate()) {
+                                        updateController.submit();
+                                        form.reset();
+                                        Navigator.of(context).pop();
+                                      }
+                                    },
+                                    isLoading: updateController.isLoading))
+                              ],
                             ),
                           ),
-                        ));
-                  },
-                  icon: const Icon(Icons.system_update_alt, color: Colors.red)),
+                        ),
+                      ));
+                },
+                icon: const Icon(Icons.system_update_alt, color: Colors.red),
+              ),
+            if (!GetPlatform.isWeb && networkController.connectionStatus == 1) 
+            IconButton(
+              tooltip: 'Mailling',
+              onPressed: () {
+                Get.toNamed(MailRoutes.mails);
+              },
+              icon: Obx(
+                () => badges.Badge(
+                  showBadge: (departementNotifyCOntroller.mailsItemCount >= 1)
+                      ? true
+                      : false,
+                  badgeContent: Text(
+                      departementNotifyCOntroller.mailsItemCount.toString(),
+                      style: const TextStyle(color: Colors.white)),
+                  child: Icon(Icons.mail_outline_outlined,
+                      size: (Responsive.isDesktop(context) ? 25 : 20)),
+                ),
+              ),
+            ),
+            if (GetPlatform.isWeb)
+              IconButton(
+                tooltip: 'Mailling',
+                onPressed: () {
+                  Get.toNamed(MailRoutes.mails);
+                },
+                icon: Obx(
+                  () => badges.Badge(
+                    showBadge: (departementNotifyCOntroller.mailsItemCount >= 1)
+                        ? true
+                        : false,
+                    badgeContent: Text(
+                        departementNotifyCOntroller.mailsItemCount.toString(),
+                        style: const TextStyle(color: Colors.white)),
+                    child: Icon(Icons.mail_outline_outlined,
+                        size: (Responsive.isDesktop(context) ? 25 : 20)),
+                  ),
+                ),
+              ),
             if (!Responsive.isMobile(context))
               const SizedBox(
                 width: p10,

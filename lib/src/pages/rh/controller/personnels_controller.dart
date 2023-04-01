@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_quill/flutter_quill.dart' as flutter_quill;
 import 'package:intl/intl.dart';
+import 'package:wm_com/src/global/api/rh/personnels_api.dart';
 import 'package:wm_com/src/global/api/upload_file_api.dart';
 import 'package:wm_com/src/global/store/rh/personnel_store.dart';
 import 'package:wm_com/src/models/rh/agent_model.dart';
@@ -17,6 +19,7 @@ import 'package:wm_com/src/utils/service_affectation.dart';
 class PersonnelsController extends GetxController
     with StateMixin<List<AgentModel>> {
   PersonnelStore personnelStore = PersonnelStore();
+  PersonnelsApi personnelsApi = PersonnelsApi();
   final ProfilController profilController = Get.find();
 
   var personnelsList = <AgentModel>[].obs;
@@ -127,16 +130,6 @@ class PersonnelsController extends GetxController
     });
   }
 
-  // void agentPieChart() async {
-  //   personnelStore.getChartPieSexe().then((response) {
-  //     agentPieChartList.clear();
-  //     agentPieChartList.addAll(response);
-  //     agentPieChartList.refresh();
-  //     change(personnelsList, status: RxStatus.success());
-  //   }, onError: (err) {
-  //     change(null, status: RxStatus.error(err.toString()));
-  //   });
-  // }
 
   detailView(int id) async {
     _isLoading.value = true;
@@ -444,6 +437,65 @@ class PersonnelsController extends GetxController
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de soumission", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+  }
+
+
+  void syncDataDown() async {
+    try {
+      _isLoading.value = true;
+      var dataCloudList = await personnelsApi.getAllData();
+      dataCloudList.map((e) async {
+        if (!personnelsList.contains(e)) {
+          if (dataCloudList.isNotEmpty) {
+            final dataItem = AgentModel(
+              id: e.id,
+              nom: e.nom,
+              postNom: e.postNom,
+              prenom: e.prenom,
+              email: e.email,
+              telephone: e.telephone,
+              adresse: e.adresse,
+              sexe: e.sexe,
+              role: e.role,
+              matricule: e.matricule,
+              dateNaissance: e.dateNaissance,
+              lieuNaissance: e.lieuNaissance,
+              nationalite: e.nationalite,
+              typeContrat: e.typeContrat,
+              departement: e.departement,
+              servicesAffectation: e.servicesAffectation,
+              dateDebutContrat: e.dateDebutContrat,
+              dateFinContrat: e.dateFinContrat,
+              fonctionOccupe: e.fonctionOccupe,
+              detailPersonnel: e.detailPersonnel,
+              statutAgent: e.statutAgent,
+              createdAt: e.createdAt,
+              photo: e.photo,
+              salaire: e.salaire,
+              signature: e.signature,
+              created: e.created,
+              isDelete: e.isDelete,
+              business: e.business,
+              sync: e.sync,
+              async: 'saved',
+            );
+            await personnelStore.insertData(dataItem).then((value) {
+              getList();
+              if (kDebugMode) {
+                print('Sync Down personne ok');
+              }
+            });
+          }
+        }
+      }).toList();
+      _isLoading.value = false;
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
           backgroundColor: Colors.red,
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);

@@ -43,13 +43,13 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
                 Get.toNamed(ComRoutes.comDashboard);
               }),
           DrawerWidget(
-              selected: currentRoute == ComRoutes.comVente,
+              selected: currentRoute == ComRoutes.comSuccursale,
               icon: Icons.shopping_basket_sharp,
               sizeIcon: 15.0,
-              title: 'Ventes',
+              title: 'Succursale',
               style: bodyMedium,
               onTap: () {
-                Get.toNamed(ComRoutes.comVente);
+                Get.toNamed(ComRoutes.comSuccursale);
               }),
           DrawerWidget(
               selected: currentRoute == ComRoutes.comAchat,
@@ -59,6 +59,33 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
               style: bodyMedium,
               onTap: () {
                 Get.toNamed(ComRoutes.comAchat);
+              }), 
+          DrawerWidget(
+              selected: currentRoute == ComRoutes.comBonLivraison,
+              icon: Icons.shopping_basket_sharp,
+              sizeIcon: 15.0,
+              title: 'Bon livraison',
+              style: bodyMedium,
+              onTap: () {
+                Get.toNamed(ComRoutes.comBonLivraison);
+              }),
+          DrawerWidget(
+              selected: currentRoute == ComRoutes.comRestitution,
+              icon: Icons.shopping_basket_sharp,
+              sizeIcon: 15.0,
+              title: 'Bon restitution',
+              style: bodyMedium,
+              onTap: () {
+                Get.toNamed(ComRoutes.comRestitution);
+              }),
+          DrawerWidget(
+              selected: currentRoute == ComRoutes.comVente,
+              icon: Icons.shopping_basket_sharp,
+              sizeIcon: 15.0,
+              title: 'Ventes',
+              style: bodyMedium,
+              onTap: () {
+                Get.toNamed(ComRoutes.comVente);
               }),
           DrawerWidget(
               selected: currentRoute == ComRoutes.comCart,
@@ -69,6 +96,7 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
               onTap: () {
                 Get.toNamed(ComRoutes.comCart);
               }),
+         
           DrawerWidget(
               selected: currentRoute == ComRoutes.comFacture,
               icon: Icons.receipt_long,

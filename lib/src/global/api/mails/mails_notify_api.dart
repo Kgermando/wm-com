@@ -14,7 +14,7 @@ class MailsNotifyApi extends GetConnect {
   Future<NotifyModel> getCount(String email) async {
     Map<String, String> header = headers;
 
-    var getDDUrl = Uri.parse("$mailsNotifyUrl/get-count/$email");
+    var getDDUrl = Uri.parse("$mailsNotifyUrl/$email");
     var resp = await client.get(getDDUrl, headers: header);
 
     if (resp.statusCode == 200) {

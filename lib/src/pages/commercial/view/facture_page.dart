@@ -9,6 +9,7 @@ import 'package:wm_com/src/pages/commercial/components/factures/table_facture.da
 import 'package:wm_com/src/pages/commercial/components/factures/table_facture_creance.dart';
 import 'package:wm_com/src/pages/commercial/controller/factures/facture_controller.dart';
 import 'package:wm_com/src/pages/commercial/controller/factures/facture_creance_controller.dart';
+import 'package:wm_com/src/widgets/barre_connection_widget.dart';
 import 'package:wm_com/src/widgets/loading.dart';
 
 class FacturePage extends StatefulWidget {
@@ -43,6 +44,7 @@ class _FacturePageState extends State<FacturePage> {
                     length: 2,
                     child: Column(
                       children: [
+                        const BarreConnectionWidget(),
                         const SizedBox(
                           height: 30,
                           child: TabBar(

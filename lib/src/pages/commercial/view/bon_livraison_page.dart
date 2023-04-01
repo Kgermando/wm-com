@@ -4,11 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/models/commercial/bon_livraison.dart';
-import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
-import 'package:wm_com/src/navigation/header/header_bar.dart';
-import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
+import 'package:wm_com/src/navigation/drawer/components/drawer_menu_commercial.dart';
+import 'package:wm_com/src/navigation/header/header_bar.dart'; 
 import 'package:wm_com/src/pages/commercial/controller/bon_livraison/bon_livraison_controller.dart';
 import 'package:wm_com/src/routes/routes.dart';
+import 'package:wm_com/src/widgets/barre_connection_widget.dart';
 import 'package:wm_com/src/widgets/loading.dart';
 
 class BonLivraisonPage extends StatefulWidget {
@@ -18,66 +18,67 @@ class BonLivraisonPage extends StatefulWidget {
   State<BonLivraisonPage> createState() => _BonLivraisonPageState();
 }
 
-class _BonLivraisonPageState extends State<BonLivraisonPage> {
-  final ProfilController profilController = Get.find();
+class _BonLivraisonPageState extends State<BonLivraisonPage> { 
+  final BonLivraisonController controller = Get.find();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Commercial";
   String subTitle = "Bon de livraison";
 
   @override
   Widget build(BuildContext context) {
-    final BonLivraisonController controller = Get.find();
-
+    
     return Scaffold(
       key: scaffoldKey,
       appBar: headerBar(context, scaffoldKey, title, subTitle),
-      drawer: const DrawerMenu(),
+      drawer: const DrawerMenuCommercial(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Visibility(
               visible: !Responsive.isMobile(context),
-              child: const Expanded(flex: 1, child: DrawerMenu())),
+              child: const Expanded(flex: 1, child: DrawerMenuCommercial())),
           Expanded(
               flex: 5,
               child: controller.obx(
                   onLoading: loadingPage(context),
                   onEmpty: const Text('Aucune donnée'),
                   onError: (error) => loadingError(context, error!), (state) {
-                List<BonLivraisonModel> bonLivraisonList = state!
+                var bonLivraisonList = state!
                     .where((element) =>
-                        element.succursale == profilController.user.succursale)
+                        element.succursale == controller.profilController.user.succursale)
                     .toList();
                 return SingleChildScrollView(
                     controller: ScrollController(),
                     physics: const ScrollPhysics(),
-                    child: Container(
-                      margin: const EdgeInsets.only(
-                          top: p20, bottom: p8, right: p20, left: p20),
-                      decoration: const BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                    child: Column(
+                      children: [
+                        const BarreConnectionWidget(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
                             children: [
-                              IconButton(
-                                  onPressed: () {
-                                    controller.getList();
-                                  },
-                                  icon: const Icon(Icons.refresh,
-                                      color: Colors.green))
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                      onPressed: () {
+                                        controller.getList();
+                                      },
+                                      icon: const Icon(Icons.refresh,
+                                          color: Colors.green))
+                                ],
+                              ),
+                              ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: bonLivraisonList.length,
+                                  itemBuilder: (context, index) {
+                                    final data = bonLivraisonList[index];
+                                    return bonLivraisonItemWidget(data);
+                                  }),
                             ],
                           ),
-                          ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: bonLivraisonList.length,
-                              itemBuilder: (context, index) {
-                                final data = bonLivraisonList[index];
-                                return bonLivraisonItemWidget(data);
-                              }),
-                        ],
-                      ),
+                        ),
+                      ],
                     ));
               }))
         ],

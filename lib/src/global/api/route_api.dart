@@ -4,9 +4,9 @@ const String baseUrl = "http://54.242.170.46";
 const String mainUrl = "$baseUrl/api";
 
 // Notifications
-var agendasNotifyUrl = "$mainUrl/counts/agendas";
-var cartNotifyUrl = "$mainUrl/counts/carts";
-var mailsNotifyUrl = "$mainUrl/counts/mails";
+var agendasNotifyUrl = "$mainUrl/counts/agendas/get-count/${InfoSystem().business()}";
+var cartNotifyUrl = "$mainUrl/counts/carts/get-count/${InfoSystem().business()}";
+var mailsNotifyUrl = "$mainUrl/counts/mails/get-count/${InfoSystem().business()}";
 
 // AUTH
 var refreshTokenUrl = Uri.parse("$mainUrl/auth/reloadToken");

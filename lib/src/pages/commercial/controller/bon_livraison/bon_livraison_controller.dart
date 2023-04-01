@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:wm_com/src/global/api/commerciale/achat_api.dart';
 import 'package:wm_com/src/global/api/commerciale/bon_livraison_api.dart';
 import 'package:wm_com/src/global/api/commerciale/livraison_history_api.dart';
@@ -27,16 +28,18 @@ class BonLivraisonController extends GetxController
   final _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
-  @override
-  void onInit() {
+   @override
+  void onInit() async {
     super.onInit();
-    getList();
-  }
-
-  @override
-  void refresh() {
-    getList();
-    super.refresh();
+    if (!GetPlatform.isWeb) {
+      bool result = await InternetConnectionChecker().hasConnection;
+      if (result == true) {
+        getList();
+      }
+    }
+    if (GetPlatform.isWeb) {
+      getList();
+    }
   }
 
   void getList() async {

@@ -4,6 +4,7 @@ import 'package:wm_com/src/models/menu_item.dart';
 class MenuItems {
   static const List<MenuItemModel> itemsFirst = [
     itemProfile,
+    itemAnnuaire,
     itemHelp,
     itemSettings,
   ];
@@ -16,9 +17,14 @@ class MenuItems {
     text: 'Profil',
     icon: Icons.person,
   );
-
-  static const itemHelp = MenuItemModel(text: 'Aide', icon: Icons.help);
-
+  static const itemAnnuaire = MenuItemModel(
+    text: 'Annuaire',
+    icon: Icons.contact_phone,
+  );
+  static const itemHelp = MenuItemModel(
+    text: 'Aide',
+    icon: Icons.help,
+  );
   static const itemSettings = MenuItemModel(
     text: 'Settings',
     icon: Icons.settings,

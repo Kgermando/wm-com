@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/commerciale/produit_model_api.dart';
 import 'package:wm_com/src/global/store/commercial/produit_model_store.dart';
 import 'package:wm_com/src/global/store/commercial/stock_store.dart';
 import 'package:wm_com/src/models/commercial/achat_model.dart';
@@ -10,6 +12,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 class ProduitModelController extends GetxController
     with StateMixin<List<ProductModel>> {
   final ProduitModelStore produitModelStore = ProduitModelStore();
+  final ProduitModelApi produitModelApi = ProduitModelApi();
   final StockStore stockStore = StockStore();
   final ProfilController profilController = Get.find();
 
@@ -178,5 +181,44 @@ class ProduitModelController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
+  }
+
+  void syncDataDown() async {
+    try {
+      _isLoading.value = true;
+    var dataCloudList = await produitModelApi.getAllData();
+        dataCloudList.map((e) async {
+          if (!produitModelList.contains(e)) {
+            if (dataCloudList.isNotEmpty) {
+              final dataItem = ProductModel(
+                service: e.service,
+                identifiant: e.identifiant,
+                unite: e.unite,
+                price: e.price,
+                idProduct: e.idProduct,
+                signature: e.signature,
+                created: e.created, 
+                business: e.business,
+                sync: e.sync,
+                async: 'saved',
+              ); 
+              await produitModelStore.insertData(dataItem).then((value) {
+                getList();
+                if (kDebugMode) {
+                  print('Sync Down venteEffectue ok');
+                }
+              });
+            }
+          }
+        }).toList();
+      _isLoading.value = false;
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+    
   }
 }

@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/commerciale/creance_facture_api.dart';
 import 'package:wm_com/src/global/store/commercial/facture_creance_store.dart';
 import 'package:wm_com/src/global/store/commercial/facture_store.dart';
 import 'package:wm_com/src/models/commercial/creance_cart_model.dart';
@@ -10,6 +12,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 class FactureCreanceController extends GetxController
     with StateMixin<List<CreanceCartModel>> {
   final FactureCreanceStore factureCreanceStore = FactureCreanceStore();
+  final CreanceFactureApi creanceFactureApi = CreanceFactureApi();
   final FactureStore factureStore = FactureStore();
   final ProfilController profilController = Get.find();
 
@@ -101,5 +104,46 @@ class FactureCreanceController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
+  }
+
+  void syncDataDown() async {
+    try {
+      _isLoading.value = true;
+            var dataCloudList = await creanceFactureApi.getAllData();
+        dataCloudList.map((e) async {
+          if (!creanceFactureList.contains(e)) {
+            if (dataCloudList.isNotEmpty) {
+              final dataItem = CreanceCartModel(
+                cart: e.cart,
+                client: e.client,
+                nomClient: e.nomClient,
+                telephone: e.telephone,
+                addresse: e.addresse,
+                delaiPaiement: e.delaiPaiement,
+                succursale: e.succursale,
+                signature: e.signature,
+                created: e.created, 
+                business: e.business,
+                sync: e.sync,
+                async: 'saved',
+              ); 
+              await factureCreanceStore.insertData(dataItem).then((value) {
+                getList();
+                if (kDebugMode) {
+                  print('Sync Down creanceFacture ok');
+                }
+              });
+            }
+          }
+        }).toList();
+      _isLoading.value = false;
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+    
   }
 }

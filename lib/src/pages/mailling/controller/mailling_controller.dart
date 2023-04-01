@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:wm_com/src/global/api/mails/mail_api.dart';
 import 'package:wm_com/src/global/api/upload_file_api.dart';
 import 'package:wm_com/src/global/api/user/user_api.dart';
@@ -82,20 +83,43 @@ class MaillingController extends GetxController
 // var ccList = jsonDecode(mail.cc);
 
   void getList() async {
-    usersList.value = await userApi.getAllData();
-    await mailApi.getAllData().then((response) {
-      mailList.assignAll(response
-          .where((element) =>
-              element.email == profilController.user.email ||
-              element.email == "support@eventdrc.com")
-          .toList());
-      mailSendList.assignAll(response
-          .where((element) => element.emailDest == profilController.user.email)
-          .toList());
-      change(mailList, status: RxStatus.success());
-    }, onError: (err) {
-      change(null, status: RxStatus.error(err.toString()));
-    });
+    if (!GetPlatform.isWeb) {
+      bool result = await InternetConnectionChecker().hasConnection;
+      if (result == true) {
+        usersList.value = await userApi.getAllData();
+        await mailApi.getAllData().then((response) {
+          mailList.assignAll(response
+              .where((element) =>
+                  element.email == profilController.user.email ||
+                  element.email == "support@eventdrc.com")
+              .toList());
+          mailSendList.assignAll(response
+              .where((element) => element.emailDest == profilController.user.email)
+              .toList());
+          change(mailList, status: RxStatus.success());
+        }, onError: (err) {
+          change(null, status: RxStatus.error(err.toString()));
+        });
+      }
+    }
+    if (GetPlatform.isWeb) {
+      usersList.value = await userApi.getAllData();
+      await mailApi.getAllData().then((response) {
+        mailList.assignAll(response
+            .where((element) =>
+                element.email == profilController.user.email ||
+                element.email == "support@eventdrc.com")
+            .toList());
+        mailSendList.assignAll(response
+            .where(
+                (element) => element.emailDest == profilController.user.email)
+            .toList());
+        change(mailList, status: RxStatus.success());
+      }, onError: (err) {
+        change(null, status: RxStatus.error(err.toString()));
+      });
+    }
+    
   }
 
   detailView(int id) async {

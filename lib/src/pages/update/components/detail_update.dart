@@ -7,7 +7,6 @@ import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
 import 'package:wm_com/src/navigation/header/header_bar.dart';
 import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
 import 'package:wm_com/src/pages/update/controller/update_controller.dart';
-import 'package:wm_com/src/widgets/loading.dart';
 import 'package:wm_com/src/widgets/responsive_child_widget.dart';
 import 'package:wm_com/src/widgets/title_widget.dart';
 import 'package:get/get.dart';

@@ -1,13 +1,17 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/commerciale/history_rabitaillement_api.dart';
 import 'package:wm_com/src/global/store/commercial/history_ravitaillement_store.dart';
 import 'package:wm_com/src/models/commercial/history_ravitaillement_model.dart';
 import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
 
 class HistoryRavitaillementController extends GetxController
     with StateMixin<List<HistoryRavitaillementModel>> {
-  final HistoryRavitaillementStore historyRavitaillementstore =
+  final HistoryRavitaillementStore historyRavitaillementStore =
       HistoryRavitaillementStore();
+  final HistoryRavitaillementApi historyRavitaillementApi =
+      HistoryRavitaillementApi();
   final ProfilController profilController = Get.find();
 
   var historyRavitaillementList = <HistoryRavitaillementModel>[].obs;
@@ -29,7 +33,7 @@ class HistoryRavitaillementController extends GetxController
   // }
 
   void getList() async {
-    await historyRavitaillementstore.getAllData().then((response) {
+    await historyRavitaillementStore.getAllData().then((response) {
       historyRavitaillementList.clear();
       historyRavitaillementList.addAll(response);
       historyRavitaillementList.refresh();
@@ -40,14 +44,14 @@ class HistoryRavitaillementController extends GetxController
   }
 
   detailView(int id) async {
-    final data = await historyRavitaillementstore.getOneData(id);
+    final data = await historyRavitaillementStore.getOneData(id);
     return data;
   }
 
   void deleteData(int id) async {
     try {
       _isLoading.value = true;
-      await historyRavitaillementstore.deleteData(id).then((value) {
+      await historyRavitaillementStore.deleteData(id).then((value) {
         historyRavitaillementList.clear();
         getList();
         Get.back();
@@ -64,5 +68,49 @@ class HistoryRavitaillementController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
+  }
+
+  void syncDataDown() async {
+    try {
+      _isLoading.value = true;
+    var dataCloudList = await historyRavitaillementApi.getAllData();
+        dataCloudList.map((e) async {
+          if (!historyRavitaillementList.contains(e)) {
+            if (dataCloudList.isNotEmpty) {
+              final dataItem = HistoryRavitaillementModel(
+                idProduct: e.idProduct,
+                quantity: e.quantity,
+                quantityAchat: e.quantityAchat,
+                priceAchatUnit: e.priceAchatUnit,
+                prixVenteUnit: e.prixVenteUnit,
+                unite: e.unite,
+                margeBen: e.margeBen,
+                tva: e.tva,
+                qtyRavitailler: e.qtyRavitailler,
+                succursale: e.succursale,
+                signature: e.signature,
+                created: e.created,
+                business: e.business,
+                sync: e.sync,
+                async: 'saved',
+              ); 
+              await historyRavitaillementStore.insertData(dataItem).then((value) {
+                getList();
+                if (kDebugMode) {
+                  print('Sync Down historyLivraison ok');
+                }
+              });
+            }
+          }
+        }).toList();
+      _isLoading.value = false;
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+    
   }
 }

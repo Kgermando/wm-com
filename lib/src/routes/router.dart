@@ -7,14 +7,14 @@ import 'package:wm_com/src/models/commercial/creance_cart_model.dart';
 import 'package:wm_com/src/models/commercial/facture_cart_model.dart';
 import 'package:wm_com/src/models/commercial/prod_model.dart';
 import 'package:wm_com/src/models/commercial/restitution_model.dart';
-import 'package:wm_com/src/models/commercial/stocks_global_model.dart';
 import 'package:wm_com/src/models/commercial/succursale_model.dart';
 import 'package:wm_com/src/models/commercial/vente_cart_model.dart'; 
 import 'package:wm_com/src/models/finance/caisse_model.dart';
 import 'package:wm_com/src/models/finance/caisse_name_model.dart';
 import 'package:wm_com/src/models/mail/mail_model.dart';
 import 'package:wm_com/src/models/marketing/agenda_model.dart';
-import 'package:wm_com/src/models/marketing/annuaire_model.dart'; 
+import 'package:wm_com/src/models/marketing/annuaire_model.dart';
+import 'package:wm_com/src/models/reservation/reservation_model.dart'; 
 import 'package:wm_com/src/models/rh/agent_model.dart';
 import 'package:wm_com/src/models/update/update_model.dart';
 import 'package:wm_com/src/models/users/user_model.dart';
@@ -33,7 +33,9 @@ import 'package:wm_com/src/pages/auth/view/forgot_password.dart';
 import 'package:wm_com/src/pages/auth/view/login_auth.dart';
 import 'package:wm_com/src/pages/auth/view/profil_auth.dart';
 import 'package:wm_com/src/pages/commercial/bindings/com_binding.dart';
+import 'package:wm_com/src/pages/commercial/components/achats/add_achat.dart';
 import 'package:wm_com/src/pages/commercial/components/achats/detail_achat.dart';
+import 'package:wm_com/src/pages/commercial/components/achats/update_achat.dart';
 import 'package:wm_com/src/pages/commercial/components/bon_livraison/detail_bon_livraison.dart';
 import 'package:wm_com/src/pages/commercial/components/cart/detail_cart.dart';
 import 'package:wm_com/src/pages/commercial/components/factures/detail_facture.dart';
@@ -41,11 +43,8 @@ import 'package:wm_com/src/pages/commercial/components/factures/detail_facture_c
 import 'package:wm_com/src/pages/commercial/components/produit_model/ajout_product_model.dart';
 import 'package:wm_com/src/pages/commercial/components/produit_model/detail_product_model.dart';
 import 'package:wm_com/src/pages/commercial/components/produit_model/update_product_modele_controller.dart';
-import 'package:wm_com/src/pages/commercial/components/restitution/detail_restitution.dart';
-import 'package:wm_com/src/pages/commercial/components/stock_global/add_stock_global.dart';
-import 'package:wm_com/src/pages/commercial/components/stock_global/detail_stock_global.dart';
-import 'package:wm_com/src/pages/commercial/components/stock_global/livraison_stock.dart';
-import 'package:wm_com/src/pages/commercial/components/stock_global/ravitaillement_stock.dart';
+import 'package:wm_com/src/pages/commercial/components/restitution/detail_restitution.dart'; 
+import 'package:wm_com/src/pages/commercial/components/achats/livraison_stock.dart'; 
 import 'package:wm_com/src/pages/commercial/components/succursale/add_succursale.dart';
 import 'package:wm_com/src/pages/commercial/components/succursale/detail_succursale.dart';
 import 'package:wm_com/src/pages/commercial/components/succursale/update_succursale.dart';
@@ -58,8 +57,7 @@ import 'package:wm_com/src/pages/commercial/view/facture_page.dart';
 import 'package:wm_com/src/pages/commercial/view/history_livraison_page.dart';
 import 'package:wm_com/src/pages/commercial/view/history_ravitaillement_page.dart';
 import 'package:wm_com/src/pages/commercial/view/produit_model_page.dart';
-import 'package:wm_com/src/pages/commercial/view/restitution_page.dart';
-import 'package:wm_com/src/pages/commercial/view/stock_global_page.dart';
+import 'package:wm_com/src/pages/commercial/view/restitution_page.dart'; 
 import 'package:wm_com/src/pages/commercial/view/succursale_page.dart';
 import 'package:wm_com/src/pages/commercial/view/vente_effectue_page.dart';
 import 'package:wm_com/src/pages/commercial/view/vente_page.dart';
@@ -85,10 +83,17 @@ import 'package:wm_com/src/pages/marketing/components/annuaire/add_annuaire.dart
 import 'package:wm_com/src/pages/marketing/components/annuaire/detail_anniuaire.dart';
 import 'package:wm_com/src/pages/marketing/components/annuaire/update_annuaire.dart';
 import 'package:wm_com/src/pages/marketing/view/agenda_page.dart';
-import 'package:wm_com/src/pages/marketing/view/annuaire_page.dart'; 
+import 'package:wm_com/src/pages/marketing/view/annuaire_page.dart';
+import 'package:wm_com/src/pages/reservation/binding/reservation_binding.dart';
+import 'package:wm_com/src/pages/reservation/components/add_reservation.dart';
+import 'package:wm_com/src/pages/reservation/components/detail_calendar.dart';
+import 'package:wm_com/src/pages/reservation/components/detail_reservation.dart';
+import 'package:wm_com/src/pages/reservation/components/reservation_update.dart';
+import 'package:wm_com/src/pages/reservation/view/dashboard_reservation_page.dart';
+import 'package:wm_com/src/pages/reservation/view/reservation_page.dart'; 
 import 'package:wm_com/src/pages/rh/binding/personnel_binding.dart';
 import 'package:wm_com/src/pages/rh/components/add_personnel.dart';
-import 'package:wm_com/src/pages/rh/components/detail._user.dart';
+import 'package:wm_com/src/pages/rh/components/detail_user.dart';
 import 'package:wm_com/src/pages/rh/components/detail_personne.dart';
 import 'package:wm_com/src/pages/rh/components/update_personnel.dart';
 import 'package:wm_com/src/pages/rh/view/dashboard_rh.dart';
@@ -339,44 +344,11 @@ List<GetPage<dynamic>>? getPages = [
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
   GetPage(
-      name: ComRoutes.comStockGlobal,
-      binding: ComBinding(),
-      page: () => const StockGlobalPage(),
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(seconds: 1)),
-  GetPage(
-      name: ComRoutes.comStockGlobalAdd,
-      binding: ComBinding(),
-      page: () => const AddStockGlobal(),
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(seconds: 1)),
-  GetPage(
-      name: ComRoutes.comStockGlobalDetail,
-      binding: ComBinding(),
-      page: () {
-        final StocksGlobalMOdel stocksGlobalMOdel =
-            Get.arguments as StocksGlobalMOdel;
-        return DetailStockGlobal(stocksGlobalMOdel: stocksGlobalMOdel);
-      },
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(seconds: 1)),
-  GetPage(
       name: ComRoutes.comStockGlobalLivraisonStock,
       binding: ComBinding(),
       page: () {
-        final StocksGlobalMOdel stocksGlobalMOdel =
-            Get.arguments as StocksGlobalMOdel;
-        return LivraisonStock(stocksGlobalMOdel: stocksGlobalMOdel);
-      },
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(seconds: 1)),
-  GetPage(
-      name: ComRoutes.comStockGlobalRavitaillement,
-      binding: ComBinding(),
-      page: () {
-        final StocksGlobalMOdel stocksGlobalMOdel =
-            Get.arguments as StocksGlobalMOdel;
-        return RavitaillementStock(stocksGlobalMOdel: stocksGlobalMOdel);
+       final AchatModel achatModel = Get.arguments as AchatModel;
+        return LivraisonStock(achatModel: achatModel);
       },
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
@@ -502,11 +474,18 @@ List<GetPage<dynamic>>? getPages = [
       transitionDuration: const Duration(seconds: 1)),
 
   GetPage(
-      name: ComRoutes.comAchat,
+      name: ComRoutes.comAchatAdd,
       binding: ComBinding(),
-      page: () => const AchatPage(),
+      page: () => const AddAchat(),
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+    name: ComRoutes.comAchat,
+    binding: ComBinding(),
+    page: () => const AchatPage(),
+    transition: Transition.cupertino,
+    transitionDuration: const Duration(seconds: 1)
+  ),
   GetPage(
       name: ComRoutes.comAchatDetail,
       binding: ComBinding(),
@@ -516,6 +495,16 @@ List<GetPage<dynamic>>? getPages = [
       },
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+    name: ComRoutes.comAchatUpdate,
+    binding: ComBinding(),
+    page: () {
+      final AchatModel achatModel = Get.arguments as AchatModel;
+      return UpdateAchat(achatModel: achatModel);
+    },
+    transition: Transition.cupertino,
+    transitionDuration: const Duration(seconds: 1)
+  ),
 
   GetPage(
       name: ComRoutes.comVenteEffectue,
@@ -533,6 +522,57 @@ List<GetPage<dynamic>>? getPages = [
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
 
+  // Reservation
+  GetPage(
+      name: ReservationRoutes.dashboardReservation,
+      binding: ReservationBinding(),
+      page: () => const DashboardReservationPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: ReservationRoutes.reservation,
+      binding: ReservationBinding(),
+      page: () => const ReservationPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: ReservationRoutes.reservationAdd,
+      binding: ReservationBinding(),
+      page: () {
+        final DateTime dateTime = Get.arguments as DateTime;
+        return AddReservation(dateTime: dateTime);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: ReservationRoutes.reservationCalendarDetail,
+      binding: ReservationBinding(),
+      page: () {
+        final DateTime dateTime = Get.arguments as DateTime;
+        return DetailCalendar(dateTime: dateTime);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: ReservationRoutes.reservationDetail,
+      binding: ReservationBinding(),
+      page: () {
+        final ReservationModel reservationModel =
+            Get.arguments as ReservationModel;
+        return DetailReservation(reservationModel: reservationModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: ReservationRoutes.reservationUpdate,
+      binding: ReservationBinding(),
+      page: () {
+        final ReservationModel reservationModel =
+            Get.arguments as ReservationModel;
+        return UpdateReservation(reservationModel: reservationModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
 
   // RH
   GetPage(

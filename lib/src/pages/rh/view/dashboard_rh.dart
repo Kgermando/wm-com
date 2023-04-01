@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/helpers/monnaire_storage.dart';
@@ -33,34 +32,34 @@ class _DashboardRHState extends State<DashboardRH> {
 
   @override
   Widget build(BuildContext context) {
-    var isMonth = '';
-    final month = DateTime.now().month;
+    // var isMonth = '';
+    // final month = DateTime.now().month;
 
-    if (month == 1) {
-      isMonth = 'Janvier';
-    } else if (month == 2) {
-      isMonth = 'Fevrier';
-    } else if (month == 3) {
-      isMonth = 'Mars';
-    } else if (month == 4) {
-      isMonth = 'Avril';
-    } else if (month == 5) {
-      isMonth = 'Mai';
-    } else if (month == 6) {
-      isMonth = 'Juin';
-    } else if (month == 7) {
-      isMonth = 'Juillet';
-    } else if (month == 8) {
-      isMonth = 'Août';
-    } else if (month == 9) {
-      isMonth = 'Septembre';
-    } else if (month == 10) {
-      isMonth = 'Octobre';
-    } else if (month == 11) {
-      isMonth = 'Novembre';
-    } else if (month == 12) {
-      isMonth = 'Décembre';
-    }
+    // if (month == 1) {
+    //   isMonth = 'Janvier';
+    // } else if (month == 2) {
+    //   isMonth = 'Fevrier';
+    // } else if (month == 3) {
+    //   isMonth = 'Mars';
+    // } else if (month == 4) {
+    //   isMonth = 'Avril';
+    // } else if (month == 5) {
+    //   isMonth = 'Mai';
+    // } else if (month == 6) {
+    //   isMonth = 'Juin';
+    // } else if (month == 7) {
+    //   isMonth = 'Juillet';
+    // } else if (month == 8) {
+    //   isMonth = 'Août';
+    // } else if (month == 9) {
+    //   isMonth = 'Septembre';
+    // } else if (month == 10) {
+    //   isMonth = 'Octobre';
+    // } else if (month == 11) {
+    //   isMonth = 'Novembre';
+    // } else if (month == 12) {
+    //   isMonth = 'Décembre';
+    // }
     return Scaffold(
         key: scaffoldKey,
         appBar: headerBar(context, scaffoldKey, title, subTitle),

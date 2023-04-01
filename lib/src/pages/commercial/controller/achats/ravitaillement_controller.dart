@@ -90,7 +90,7 @@ class RavitaillementController extends GetxController {
           business: InfoSystem().business(),
           sync: "new",
           async: "new");
-      await historyRavitaillementController.historyRavitaillementstore
+      await historyRavitaillementController.historyRavitaillementStore
           .insertData(historyRavitaillementModel)
           .then((value) {
         // Update stock global

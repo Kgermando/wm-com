@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_speed_dial/simple_speed_dial.dart';
 import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/helpers/monnaire_storage.dart';
@@ -52,22 +53,7 @@ class _DetailAchatState extends State<DetailAchat> {
         appBar:
             headerBar(context, scaffoldKey, title, widget.achatModel.idProduct),
         drawer: const DrawerMenuCommercial(),
-        floatingActionButton: Responsive.isMobile(context)
-            ? FloatingActionButton(
-                tooltip: "Ravitaillement",
-                child: const Icon(Icons.add),
-                onPressed: () {
-                  Get.toNamed(ComRoutes.comStockGlobalRavitaillement,
-                      arguments: widget.achatModel);
-                })
-            : FloatingActionButton.extended(
-                label: const Text("Ajouter Ravitaillement"),
-                tooltip: "Nouveau Ravitaillement",
-                icon: const Icon(Icons.add),
-                onPressed: () {
-                  Get.toNamed(ComRoutes.comStockGlobalRavitaillement,
-                      arguments: widget.achatModel);
-                }),
+        floatingActionButton: speedialWidget(),
         body: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -711,6 +697,41 @@ class _DetailAchatState extends State<DetailAchat> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+
+  SpeedDial speedialWidget() {
+    return SpeedDial(
+      closedForegroundColor: themeColor,
+      openForegroundColor: Colors.white,
+      closedBackgroundColor: themeColor,
+      openBackgroundColor: themeColor,
+      speedDialChildren: <SpeedDialChild>[
+        SpeedDialChild(
+          child: const Icon(Icons.reply),
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.green.shade700,
+          label: 'Ravitaillement stock',
+          onPressed: () {
+           Get.toNamed(ComRoutes.comStockGlobalRavitaillement,
+                arguments: widget.achatModel);
+          },
+        ),
+        SpeedDialChild(
+            child: const Icon(Icons.local_shipping),
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue.shade700,
+            label: 'Livraison stock',
+            onPressed: () {
+              Get.toNamed(ComRoutes.comStockGlobalLivraisonStock,
+                  arguments: widget.achatModel);
+            }),
+      ],
+      child: const Icon(
+        Icons.menu,
+        color: Colors.white,
       ),
     );
   }

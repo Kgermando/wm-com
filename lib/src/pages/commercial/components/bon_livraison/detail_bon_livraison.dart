@@ -5,7 +5,7 @@ import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/helpers/monnaire_storage.dart';
 import 'package:wm_com/src/models/commercial/bon_livraison.dart';
-import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
+import 'package:wm_com/src/navigation/drawer/components/drawer_menu_commercial.dart'; 
 import 'package:wm_com/src/navigation/header/header_bar.dart';
 import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
 import 'package:wm_com/src/pages/commercial/components/bon_livraison/bon_livraison_pdf.dart';
@@ -44,13 +44,13 @@ class _DetailBonLivraisonState extends State<DetailBonLivraison> {
       key: scaffoldKey,
       appBar: headerBar(
           context, scaffoldKey, title, widget.bonLivraisonModel.idProduct),
-      drawer: const DrawerMenu(),
+      drawer: const DrawerMenuCommercial(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Visibility(
               visible: !Responsive.isMobile(context),
-              child: const Expanded(flex: 1, child: DrawerMenu())),
+              child: const Expanded(flex: 1, child: DrawerMenuCommercial())),
           Expanded(
               flex: 5,
               child: SingleChildScrollView(

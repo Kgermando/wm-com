@@ -13,6 +13,7 @@ import 'package:wm_com/src/pages/commercial/components/vente_effectue/vente_effe
 import 'package:wm_com/src/pages/commercial/controller/produit_model/produit_model_controller.dart';
 import 'package:wm_com/src/pages/commercial/controller/vente_effectue/ventes_effectue_controller.dart';
 import 'package:wm_com/src/routes/routes.dart';
+import 'package:wm_com/src/widgets/barre_connection_widget.dart';
 import 'package:wm_com/src/widgets/loading.dart';
 import 'package:wm_com/src/widgets/title_widget.dart';
 
@@ -54,78 +55,77 @@ class _VenteEffectueState extends State<VenteEffectue> {
                     (state) => SingleChildScrollView(
                         controller: ScrollController(),
                         physics: const ScrollPhysics(),
-                        child: Container(
-                            margin: EdgeInsets.only(
-                                top: Responsive.isMobile(context) ? 0.0 : p20,
-                                bottom: p8,
-                                right: Responsive.isDesktop(context) ? p20 : 0,
-                                left: Responsive.isDesktop(context) ? p20 : 0),
-                            decoration: const BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const TitleWidget(
-                                        title: "Historique de ventes"),
-                                    Row(
-                                      children: [
-                                        IconButton(
-                                          onPressed: () async {
-                                            final values =
-                                                await showCalendarDatePicker2Dialog(
-                                              context: context,
-                                              config:
-                                                  CalendarDatePicker2WithActionButtonsConfig(
-                                                calendarType:
-                                                    CalendarDatePicker2Type
-                                                        .range,
-                                              ),
-                                              dialogSize: const Size(325, 400),
-                                              borderRadius:
-                                                  BorderRadius.circular(15),
-                                              // initialValue: [],
-                                              dialogBackgroundColor:
-                                                  Colors.white,
-                                            );
-                                            DateTime? date1 = values![0];
-                                            DateTime? date2 = values[1];
-                                            var reppoting = state!
-                                                .where((element) =>
-                                                    element.created
-                                                            .millisecondsSinceEpoch >=
-                                                        date1!
-                                                            .millisecondsSinceEpoch &&
-                                                    element.created
-                                                            .millisecondsSinceEpoch <=
-                                                        date2!
-                                                            .millisecondsSinceEpoch)
-                                                .toList();
-                                            VenteEffectueComXlsx()
-                                                .exportToExcel(
-                                                    title, reppoting);
-                                          },
-                                          icon:
-                                              const Icon(Icons.install_desktop),
-                                        ),
-                                        IconButton(
-                                            onPressed: () {
-                                              controller.getList();
-                                              Navigator.pushNamed(context,
-                                                  ComRoutes.comVenteEffectue);
+                        child: Column(
+                          children: [
+                            const BarreConnectionWidget(),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const TitleWidget(
+                                          title: "Historique de ventes"),
+                                      Row(
+                                        children: [
+                                          IconButton(
+                                            onPressed: () async {
+                                              final values =
+                                                  await showCalendarDatePicker2Dialog(
+                                                context: context,
+                                                config:
+                                                    CalendarDatePicker2WithActionButtonsConfig(
+                                                  calendarType:
+                                                      CalendarDatePicker2Type
+                                                          .range,
+                                                ),
+                                                dialogSize: const Size(325, 400),
+                                                borderRadius:
+                                                    BorderRadius.circular(15),
+                                                // initialValue: [],
+                                                dialogBackgroundColor:
+                                                    Colors.white,
+                                              );
+                                              DateTime? date1 = values![0];
+                                              DateTime? date2 = values[1];
+                                              var reppoting = state!
+                                                  .where((element) =>
+                                                      element.created
+                                                              .millisecondsSinceEpoch >=
+                                                          date1!
+                                                              .millisecondsSinceEpoch &&
+                                                      element.created
+                                                              .millisecondsSinceEpoch <=
+                                                          date2!
+                                                              .millisecondsSinceEpoch)
+                                                  .toList();
+                                              VenteEffectueComXlsx()
+                                                  .exportToExcel(
+                                                      title, reppoting);
                                             },
-                                            icon: const Icon(Icons.refresh,
-                                                color: Colors.green)),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                                treeView(state!)
-                              ],
-                            )))))
+                                            icon:
+                                                const Icon(Icons.install_desktop),
+                                          ),
+                                          IconButton(
+                                              onPressed: () {
+                                                controller.getList();
+                                                Navigator.pushNamed(context,
+                                                    ComRoutes.comVenteEffectue);
+                                              },
+                                              icon: const Icon(Icons.refresh,
+                                                  color: Colors.green)),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  treeView(state!)
+                                ],
+                              ),
+                            ),
+                          ],
+                        ))))
           ],
         ));
   }

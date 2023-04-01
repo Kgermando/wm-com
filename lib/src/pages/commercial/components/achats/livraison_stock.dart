@@ -5,18 +5,18 @@ import 'package:intl/intl.dart';
 import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/helpers/monnaire_storage.dart';
+import 'package:wm_com/src/models/commercial/achat_model.dart';
 import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
 import 'package:wm_com/src/navigation/header/header_bar.dart';
-import 'package:wm_com/src/pages/commercial/controller/stock_global/livraison_controller.dart';
-import 'package:wm_com/src/models/commercial/stocks_global_model.dart';
+import 'package:wm_com/src/pages/commercial/controller/achats/livraison_controller.dart'; 
 import 'package:wm_com/src/utils/regex.dart';
 import 'package:wm_com/src/widgets/btn_widget.dart';
 import 'package:wm_com/src/widgets/responsive_child_widget.dart';
 import 'package:wm_com/src/widgets/title_widget.dart';
 
 class LivraisonStock extends StatefulWidget {
-  const LivraisonStock({super.key, required this.stocksGlobalMOdel});
-  final StocksGlobalMOdel stocksGlobalMOdel;
+   const LivraisonStock({super.key, required this.achatModel});
+  final AchatModel achatModel;
 
   @override
   State<LivraisonStock> createState() => _LivraisonStockState();
@@ -32,7 +32,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
   void initState() {
     setState(() {
       controller.controllerPrixVenteUnit =
-          TextEditingController(text: widget.stocksGlobalMOdel.prixVenteUnit);
+          TextEditingController(text: widget.achatModel.prixVenteUnit);
     });
     super.initState();
   }
@@ -42,7 +42,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
     return Scaffold(
       key: scaffoldKey,
       appBar: headerBar(
-          context, scaffoldKey, title, widget.stocksGlobalMOdel.idProduct),
+          context, scaffoldKey, title, widget.achatModel.idProduct),
       drawer: const DrawerMenu(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -100,7 +100,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
                                             controller.formKey.currentState!;
                                         if (form.validate()) {
                                           controller
-                                              .submit(widget.stocksGlobalMOdel);
+                                              .submit(widget.achatModel);
                                           form.reset();
                                         }
                                       }))
@@ -176,7 +176,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
                 } else if (value.contains(RegExp(r'[A-Z]'))) {
                   return 'Que les chiffres svp!';
                 } else if (double.parse(value) >
-                    double.parse(widget.stocksGlobalMOdel.quantity)) {
+                    double.parse(widget.achatModel.quantity)) {
                   return 'La Qté à livrer ne peut pas être superieur à la Qtés actuelle';
                 }
                 return null;
@@ -190,7 +190,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
               child: Container(
                 margin: const EdgeInsets.only(left: 10.0, bottom: 5.0),
                 child: Text(
-                    'Qté Existante: ${widget.stocksGlobalMOdel.quantity} ${widget.stocksGlobalMOdel.unite}',
+                    'Qté Existante: ${widget.achatModel.quantity} ${widget.achatModel.unite}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!
@@ -245,7 +245,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
               child: Container(
                 margin: const EdgeInsets.only(left: 10.0, bottom: 5.0),
                 child: Text(
-                    'Prix Existant: ${NumberFormat.decimalPattern('fr').format(double.parse(double.parse(widget.stocksGlobalMOdel.prixVenteUnit).toStringAsFixed(2)))} ${monnaieStorage.monney}',
+                    'Prix Existant: ${NumberFormat.decimalPattern('fr').format(double.parse(double.parse(widget.achatModel.prixVenteUnit).toStringAsFixed(2)))} ${monnaieStorage.monney}',
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium!

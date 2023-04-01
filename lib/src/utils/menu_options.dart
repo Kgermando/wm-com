@@ -22,6 +22,10 @@ class MenuOptions {
         Get.toNamed(UserRoutes.profil);
         break;
 
+      case MenuItems.itemAnnuaire:
+        Get.toNamed(MarketingRoutes.marketingAnnuaire);
+        break;
+
       case MenuItems.itemHelp:
         Get.toNamed(SettingsRoutes.helps);
         break;

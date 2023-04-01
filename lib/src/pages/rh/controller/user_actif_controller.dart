@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/user/user_api.dart';
 import 'package:wm_com/src/global/store/rh/users_store.dart';
 import 'package:wm_com/src/models/rh/agent_model.dart';
 import 'package:wm_com/src/models/users/user_model.dart';
@@ -7,6 +9,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 
 class UsersController extends GetxController with StateMixin<List<UserModel>> {
   final UsersStore usersStore = UsersStore();
+  final UserApi userApi = UserApi();
 
   var usersList = <UserModel>[].obs;
 
@@ -29,7 +32,7 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
   // }
 
   void clear() {
-    succursale == null;
+    succursale = null;
   }
 
   void getList() async {
@@ -160,6 +163,50 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur lors de la soumission", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+  }
+
+  void syncDataDown() async {
+    try {
+      _isLoading.value = true;
+      var dataCloudList = await userApi.getAllData();
+      dataCloudList.map((e) async {
+        if (!usersList.contains(e)) {
+          if (dataCloudList.isNotEmpty) {
+            final dataItem = UserModel(
+              nom: e.nom,
+              prenom: e.prenom,
+              email: e.email,
+              telephone: e.telephone,
+              matricule: e.matricule,
+              departement: e.departement,
+              servicesAffectation: e.servicesAffectation,
+              fonctionOccupe: e.fonctionOccupe,
+              role: e.role,
+              isOnline: e.isOnline,
+              createdAt: e.createdAt,
+              passwordHash: e.passwordHash,
+              succursale: e.succursale,
+              business: e.business,
+              sync: e.sync,
+              async: 'saved',
+            ); 
+            await usersStore.insertData(dataItem).then((value) {
+              getList();
+              if (kDebugMode) {
+                print('Sync Down user ok');
+              }
+            });
+          }
+        }
+      }).toList();
+      _isLoading.value = false;
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
           backgroundColor: Colors.red,
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);

@@ -9,6 +9,7 @@ import 'package:wm_com/src/models/commercial/courbe_vente_gain_model.dart';
 import 'package:wm_com/src/models/commercial/succursale_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:wm_com/src/models/commercial/vente_chart_model.dart';
+import 'package:wm_com/src/utils/info_system.dart';
 
 class SuccursaleApi extends GetConnect {
   var client = http.Client();
@@ -90,7 +91,7 @@ class SuccursaleApi extends GetConnect {
   Future<List<VenteChartModel>> getVenteChart(String name) async {
     Map<String, String> header = headers;
 
-    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart/$name");
+    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart/${InfoSystem().business()}/$name");
     var resp = await client.get(getUrl, headers: header);
 
     if (resp.statusCode == 200) {
@@ -108,7 +109,7 @@ class SuccursaleApi extends GetConnect {
   Future<List<CourbeVenteModel>> getAllDataVenteDay(String name) async {
     Map<String, String> header = headers;
 
-    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart-day/$name");
+    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart-day/${InfoSystem().business()}/$name");
     var resp = await client.get(getUrl, headers: header);
 
     if (resp.statusCode == 200) {
@@ -126,7 +127,7 @@ class SuccursaleApi extends GetConnect {
   Future<List<CourbeVenteModel>> getAllDataVenteMouth(String name) async {
     Map<String, String> header = headers;
 
-    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart-month/$name");
+    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart-month/${InfoSystem().business()}/$name");
     var resp = await client.get(getUrl, headers: header);
 
     if (resp.statusCode == 200) {
@@ -144,7 +145,7 @@ class SuccursaleApi extends GetConnect {
   Future<List<CourbeVenteModel>> getAllDataVenteYear(String name) async {
     Map<String, String> header = headers;
 
-    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart-year/$name");
+    var getUrl = Uri.parse("$mainUrl/succursales/vente-chart-year/${InfoSystem().business()}/$name");
     var resp = await client.get(getUrl, headers: header);
 
     if (resp.statusCode == 200) {
@@ -162,7 +163,7 @@ class SuccursaleApi extends GetConnect {
   Future<List<CourbeGainModel>> getAllDataGainDay(String name) async {
     Map<String, String> header = headers;
 
-    var getUrl = Uri.parse("$mainUrl/succursales/gain-chart-day/$name");
+    var getUrl = Uri.parse("$mainUrl/succursales/gain-chart-day/${InfoSystem().business()}/$name");
     var resp = await client.get(getUrl, headers: header);
 
     if (resp.statusCode == 200) {
@@ -180,7 +181,7 @@ class SuccursaleApi extends GetConnect {
   Future<List<CourbeGainModel>> getAllDataGainMouth(String name) async {
     Map<String, String> header = headers;
 
-    var getUrl = Uri.parse("$mainUrl/succursales/gain-chart-month/$name");
+    var getUrl = Uri.parse("$mainUrl/succursales/gain-chart-month/${InfoSystem().business()}/$name");
     var resp = await client.get(getUrl, headers: header);
 
     if (resp.statusCode == 200) {
@@ -198,7 +199,7 @@ class SuccursaleApi extends GetConnect {
   Future<List<CourbeGainModel>> getAllDataGainYear(String name) async {
     Map<String, String> header = headers;
 
-    var getUrl = Uri.parse("$mainUrl/succursales/gain-chart-year/$name");
+    var getUrl = Uri.parse("$mainUrl/succursales/gain-chart-year/${InfoSystem().business()}/$name");
     var resp = await client.get(getUrl, headers: header);
 
     if (resp.statusCode == 200) {

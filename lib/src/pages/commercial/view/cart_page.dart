@@ -11,6 +11,7 @@ import 'package:wm_com/src/navigation/header/header_bar.dart';
 import 'package:wm_com/src/pages/commercial/components/cart/cart_item_widget.dart';
 import 'package:wm_com/src/pages/commercial/controller/cart/cart_controller.dart';
 import 'package:wm_com/src/routes/routes.dart';
+import 'package:wm_com/src/widgets/barre_connection_widget.dart';
 import 'package:wm_com/src/widgets/loading.dart';
 import 'package:wm_com/src/widgets/title_widget.dart';
 
@@ -55,42 +56,42 @@ class _CartPageState extends State<CartPage> {
                   (state) => SingleChildScrollView(
                       controller: ScrollController(),
                       physics: const ScrollPhysics(),
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            top: Responsive.isMobile(context) ? 0.0 : p20,
-                            bottom: p8),
-                        decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Column(
+                        children: [
+                          const BarreConnectionWidget(),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
                               children: [
-                                const TitleWidget(title: 'Panier'),
-                                IconButton(
-                                    onPressed: () {
-                                      // Navigator.pushNamed(
-                                      //     context, ComRoutes.comCart);
-                                      Get.toNamed(ComRoutes.comCart);
-                                      controller.getList();
-                                    },
-                                    icon: const Icon(Icons.refresh,
-                                        color: Colors.green))
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const TitleWidget(title: 'Panier'),
+                                    IconButton(
+                                        onPressed: () {
+                                          // Navigator.pushNamed(
+                                          //     context, ComRoutes.comCart);
+                                          Get.toNamed(ComRoutes.comCart);
+                                          controller.getList();
+                                        },
+                                        icon: const Icon(Icons.refresh,
+                                            color: Colors.green))
+                                  ],
+                                ),
+                                Obx(() => ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: state!.length,
+                                    itemBuilder: (context, index) {
+                                      final cart = state[index];
+                                      return CartItemWidget(
+                                          cart: cart, controller: controller);
+                                    })),
+                                Obx(() => SizedBox(
+                                    height: p50, child: totalCart(controller)))
                               ],
                             ),
-                            Obx(() => ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: state!.length,
-                                itemBuilder: (context, index) {
-                                  final cart = state[index];
-                                  return CartItemWidget(
-                                      cart: cart, controller: controller);
-                                })),
-                            Obx(() => SizedBox(
-                                height: p50, child: totalCart(controller)))
-                          ],
-                        ),
+                          ),
+                        ],
                       ))))
         ],
       ),

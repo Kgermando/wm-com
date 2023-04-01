@@ -81,17 +81,7 @@ class _HomePageState extends State<HomePage> {
                                       onPress: () {
                                         Get.toNamed(HomeRoutes.subHome);
                                       }
-                                    ),
-                                    // ServiceHome(
-                                    //     title: 'Glace',
-                                    //     icon: Icons.icecream,
-                                    //     color: Colors.cyan,
-                                    //     onPress: () {}),
-                                    // ServiceHome(
-                                    //     title: 'Buffet',
-                                    //     icon: Icons.emoji_food_beverage,
-                                    //     color: Colors.purple,
-                                    //     onPress: () {}),
+                                    ), 
                                     ServiceHome(
                                         title: 'Caisses',
                                         icon: Icons.savings,

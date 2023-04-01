@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/commerciale/achat_api.dart';
 import 'package:wm_com/src/global/store/commercial/cart_store.dart';
 import 'package:wm_com/src/global/store/commercial/stock_store.dart';
 import 'package:wm_com/src/models/commercial/achat_model.dart';
@@ -9,6 +11,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 
 class AchatController extends GetxController with StateMixin<List<AchatModel>> {
   final StockStore stockStore = StockStore();
+  final AchatApi achatApi = AchatApi();
   final CartStore cartStore = CartStore();
 
   final ProfilController profilController = Get.put(ProfilController());
@@ -203,5 +206,85 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
+  }
+
+  void syncDataDown() async {
+    try {
+      _isLoading.value = true;
+        var dataCloudList = await achatApi.getAllData();
+        dataCloudList.map((e) async {
+          if (!achatList.contains(e)) {
+            if (dataCloudList.isNotEmpty) {
+              final dataItem = AchatModel(
+                idProduct: e.idProduct,
+                quantity: e.quantity,
+                quantityAchat: e.quantityAchat,
+                priceAchatUnit: e.priceAchatUnit,
+                prixVenteUnit: e.prixVenteUnit,
+                unite: e.unite,
+                tva: e.tva,
+                remise: e.remise,
+                qtyRemise: e.qtyRemise,
+                qtyLivre: e.qtyLivre,
+                succursale: e.succursale,
+                signature: e.signature,
+                created: e.created,
+                business: e.business,
+                sync: e.sync,
+                async: 'saved',
+              );
+              await stockStore.insertData(dataItem).then((value) {
+                getList();
+                if (kDebugMode) {
+                  print('Sync Down succursale ok');
+                }
+              });
+            } 
+          }
+          if (achatList.contains(e)) {
+            if (dataCloudList.isNotEmpty) {
+              for (var element in achatList) {
+                if (e.idProduct == element.idProduct) {
+                  double qty =
+                      double.parse(element.quantity) + double.parse(e.quantity);
+                  final dataItem = AchatModel(
+                    idProduct: e.idProduct,
+                    quantity: qty.toString(),
+                    quantityAchat: e.quantityAchat,
+                    priceAchatUnit: e.priceAchatUnit,
+                    prixVenteUnit: e.prixVenteUnit,
+                    unite: e.unite,
+                    tva: e.tva,
+                    remise: e.remise,
+                    qtyRemise: e.qtyRemise,
+                    qtyLivre: e.qtyLivre,
+                    succursale: e.succursale,
+                    signature: e.signature,
+                    created: e.created,
+                    business: e.business,
+                    sync: e.sync,
+                    async: 'saved',
+                  );
+                  await stockStore.updateData(dataItem).then((value) {
+                    getList();
+                    if (kDebugMode) {
+                      print('Sync Down succursale ok');
+                    }
+                  });
+                }
+              }
+            }
+            
+          }
+        }).toList();
+      _isLoading.value = false;
+    } catch (e) {
+     _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
+        backgroundColor: Colors.red,
+        icon: const Icon(Icons.check),
+        snackPosition: SnackPosition.TOP);
+    } 
+    
   }
 }

@@ -6,10 +6,11 @@ import 'package:wm_com/src/navigation/drawer/components/drawer_menu_commercial.d
 import 'package:wm_com/src/navigation/header/header_bar.dart';
 import 'package:wm_com/src/pages/commercial/components/succursale/table_succursale.dart';
 import 'package:wm_com/src/pages/commercial/controller/succursale/succursale_controller.dart';
+import 'package:wm_com/src/widgets/barre_connection_widget.dart';
 import 'package:wm_com/src/widgets/btn_widget.dart';
 import 'package:wm_com/src/widgets/loading.dart';
 import 'package:wm_com/src/widgets/responsive_child_widget.dart';
-import 'package:wm_com/src/widgets/title_widget.dart'; 
+import 'package:wm_com/src/widgets/title_widget.dart';
 
 class SuccursalePage extends StatefulWidget {
   const SuccursalePage({super.key});
@@ -43,7 +44,7 @@ class _SuccursalePageState extends State<SuccursalePage> {
                   constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height / 1.3),
                   builder: (BuildContext context) {
                     return Container(
-                        padding: const EdgeInsets.all(p20),
+                        padding: const EdgeInsets.all(p10),
                         child: Form(
                           key: controller.formKey,
                           child: Column(
@@ -86,6 +87,7 @@ class _SuccursalePageState extends State<SuccursalePage> {
               });
             }),
         body: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Visibility(
                 visible: !Responsive.isMobile(context),
@@ -96,14 +98,18 @@ class _SuccursalePageState extends State<SuccursalePage> {
                     onLoading: loadingPage(context),
                     onEmpty: const Text('Aucune donnée'),
                     onError: (error) => loadingError(context, error!),
-                    (state) => Container(
-                        margin: const EdgeInsets.only(
-                            top: p20, right: p20, left: p20, bottom: p8),
-                        decoration: const BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20))),
-                        child: TableSuccursale(
-                            succursaleList: state!, controller: controller)))),
+                    (state) => Column(
+                      children: [
+                        const BarreConnectionWidget(),
+                        Expanded(
+                          child: Padding( 
+                            padding: const EdgeInsets.all(8.0),
+                            child: TableSuccursale(
+                                succursaleList: state!, controller: controller),
+                          ),
+                        ),
+                      ],
+                    ))),
           ],
         ));
   }

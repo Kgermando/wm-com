@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/models/commercial/restitution_model.dart';
-import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
+import 'package:wm_com/src/navigation/drawer/components/drawer_menu_commercial.dart';
 import 'package:wm_com/src/navigation/header/header_bar.dart';
 import 'package:wm_com/src/pages/commercial/controller/restitution/restitution_controller.dart';
 import 'package:wm_com/src/routes/routes.dart';
@@ -28,13 +28,13 @@ class _RestitutionPageState extends State<RestitutionPage> {
     return Scaffold(
       key: scaffoldKey,
       appBar: headerBar(context, scaffoldKey, title, subTitle),
-      drawer: const DrawerMenu(),
+      drawer: const DrawerMenuCommercial(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Visibility(
               visible: !Responsive.isMobile(context),
-              child: const Expanded(flex: 1, child: DrawerMenu())),
+              child: const Expanded(flex: 1, child: DrawerMenuCommercial())),
           Expanded(
               flex: 5,
               child: controller.obx(
