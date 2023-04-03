@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wm_com/src/global/api/commerciale/vente_cart_api.dart';
@@ -67,46 +66,5 @@ class VenteCartController extends GetxController
     }
   }
 
-  void syncDataDown() async {
-    try {
-      _isLoading.value = true;
-      var dataCloudList = await venteCartApi.getAllData();
-      dataCloudList.map((e) async {
-        if (!venteCartList.contains(e)) {
-          if (dataCloudList.isNotEmpty) {
-            final dataItem = VenteCartModel(
-              idProductCart: e.idProductCart,
-              quantityCart: e.quantityCart,
-              priceTotalCart: e.priceTotalCart,
-              unite: e.unite,
-              tva: e.tva,
-              remise: e.remise,
-              qtyRemise: e.qtyRemise,
-              succursale: e.succursale,
-              signature: e.signature,
-              created: e.created,
-              createdAt: e.createdAt,
-              business: e.business,
-              sync: e.sync,
-              async: 'saved',
-            );
-            await venteEffectueStore.insertData(dataItem).then((value) {
-              getList();
-              if (kDebugMode) {
-                print('Sync Down venteEffectue ok');
-              }
-            });
-          }
-        }
-      }).toList();
-      _isLoading.value = false;
-    } catch (e) {
-      _isLoading.value = false;
-      Get.snackbar("Erreur de la synchronisation", "$e",
-          backgroundColor: Colors.red,
-          icon: const Icon(Icons.check),
-          snackPosition: SnackPosition.TOP);
-    }
-    
-  }
+
 }

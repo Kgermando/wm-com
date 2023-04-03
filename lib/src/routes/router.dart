@@ -5,8 +5,7 @@ import 'package:wm_com/src/models/commercial/bon_livraison.dart';
 import 'package:wm_com/src/models/commercial/cart_model.dart';
 import 'package:wm_com/src/models/commercial/creance_cart_model.dart';
 import 'package:wm_com/src/models/commercial/facture_cart_model.dart';
-import 'package:wm_com/src/models/commercial/prod_model.dart';
-import 'package:wm_com/src/models/commercial/restitution_model.dart';
+import 'package:wm_com/src/models/commercial/prod_model.dart'; 
 import 'package:wm_com/src/models/commercial/succursale_model.dart';
 import 'package:wm_com/src/models/commercial/vente_cart_model.dart'; 
 import 'package:wm_com/src/models/finance/caisse_model.dart';
@@ -14,7 +13,11 @@ import 'package:wm_com/src/models/finance/caisse_name_model.dart';
 import 'package:wm_com/src/models/mail/mail_model.dart';
 import 'package:wm_com/src/models/marketing/agenda_model.dart';
 import 'package:wm_com/src/models/marketing/annuaire_model.dart';
-import 'package:wm_com/src/models/reservation/reservation_model.dart'; 
+import 'package:wm_com/src/models/reservation/reservation_model.dart';
+import 'package:wm_com/src/models/restaurant/creance_restaurant_model.dart';
+import 'package:wm_com/src/models/restaurant/facture_restaurant_model.dart';
+import 'package:wm_com/src/models/restaurant/table_restaurant_model.dart';
+import 'package:wm_com/src/models/restaurant/vente_restaurant_model.dart'; 
 import 'package:wm_com/src/models/rh/agent_model.dart';
 import 'package:wm_com/src/models/update/update_model.dart';
 import 'package:wm_com/src/models/users/user_model.dart';
@@ -35,6 +38,7 @@ import 'package:wm_com/src/pages/auth/view/profil_auth.dart';
 import 'package:wm_com/src/pages/commercial/bindings/com_binding.dart';
 import 'package:wm_com/src/pages/commercial/components/achats/add_achat.dart';
 import 'package:wm_com/src/pages/commercial/components/achats/detail_achat.dart';
+import 'package:wm_com/src/pages/commercial/components/achats/ravitaillement_stock.dart';
 import 'package:wm_com/src/pages/commercial/components/achats/update_achat.dart';
 import 'package:wm_com/src/pages/commercial/components/bon_livraison/detail_bon_livraison.dart';
 import 'package:wm_com/src/pages/commercial/components/cart/detail_cart.dart';
@@ -42,8 +46,7 @@ import 'package:wm_com/src/pages/commercial/components/factures/detail_facture.d
 import 'package:wm_com/src/pages/commercial/components/factures/detail_facture_creance.dart';
 import 'package:wm_com/src/pages/commercial/components/produit_model/ajout_product_model.dart';
 import 'package:wm_com/src/pages/commercial/components/produit_model/detail_product_model.dart';
-import 'package:wm_com/src/pages/commercial/components/produit_model/update_product_modele_controller.dart';
-import 'package:wm_com/src/pages/commercial/components/restitution/detail_restitution.dart'; 
+import 'package:wm_com/src/pages/commercial/components/produit_model/update_product_modele_controller.dart'; 
 import 'package:wm_com/src/pages/commercial/components/achats/livraison_stock.dart'; 
 import 'package:wm_com/src/pages/commercial/components/succursale/add_succursale.dart';
 import 'package:wm_com/src/pages/commercial/components/succursale/detail_succursale.dart';
@@ -56,8 +59,7 @@ import 'package:wm_com/src/pages/commercial/view/dashboard_com_page.dart';
 import 'package:wm_com/src/pages/commercial/view/facture_page.dart';
 import 'package:wm_com/src/pages/commercial/view/history_livraison_page.dart';
 import 'package:wm_com/src/pages/commercial/view/history_ravitaillement_page.dart';
-import 'package:wm_com/src/pages/commercial/view/produit_model_page.dart';
-import 'package:wm_com/src/pages/commercial/view/restitution_page.dart'; 
+import 'package:wm_com/src/pages/commercial/view/produit_model_page.dart'; 
 import 'package:wm_com/src/pages/commercial/view/succursale_page.dart';
 import 'package:wm_com/src/pages/commercial/view/vente_effectue_page.dart';
 import 'package:wm_com/src/pages/commercial/view/vente_page.dart';
@@ -90,7 +92,71 @@ import 'package:wm_com/src/pages/reservation/components/detail_calendar.dart';
 import 'package:wm_com/src/pages/reservation/components/detail_reservation.dart';
 import 'package:wm_com/src/pages/reservation/components/reservation_update.dart';
 import 'package:wm_com/src/pages/reservation/view/dashboard_reservation_page.dart';
-import 'package:wm_com/src/pages/reservation/view/reservation_page.dart'; 
+import 'package:wm_com/src/pages/reservation/view/reservation_page.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/bindings/livraison_binding.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/commande/detail_commande_livraison.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/consommation/detail_consommation_livraison.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/factures/detail_creance_livraison.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/factures/detail_facture_livraison.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/produit_model/ajout_product_livraison_model.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/produit_model/detail_product_livraison_model.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/produit_model/update_prod_model_livraison_controller.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/components/vente_effectue/detail_vente_effectue_livraison.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/view/dashboard_livraison_page.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/view/facture_livraison_page.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/view/prod_model_livraison_page.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/view/table_commande_livraison_page.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/view/table_consommation_livraison_page.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/view/vente_effectue_livraison_page.dart';
+import 'package:wm_com/src/pages/restaurants/livraison/view/vente_livraison_page.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/bindings/restaurant_binding.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/commande/detail_commande.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/consommation/detail_consommation.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/factures/detail_creance_restaurant.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/factures/detail_facture_restaurant.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/produit_model/ajout_product_rest_model.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/produit_model/detail_product_rest_model.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/produit_model/update_prod_model_rest_controller.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/components/vente_effectue/detail_vente_effectue_rest.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/view/dashboard_rest_page.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/view/facture_rest_page.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/view/prod_model_restaurant_page.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/view/table_commande_page.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/view/table_consommation_page.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/view/vente_effectue_rest_page.dart';
+import 'package:wm_com/src/pages/restaurants/restaurant/view/vente_retaurant_page.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/bindings/terrasse_binding.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/commande/detail_commande_terrasse.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/consommation/detail_consommation_terrasse.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/factures/detail_creance_terrasse.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/factures/detail_facture_terrasse.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/produit_model/ajout_product_terrasse_model.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/produit_model/detail_product_terrasse_model.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/produit_model/update_prod_model_terrasse_controller.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/components/vente_effectue/detail_vente_effectue_terrasse.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/view/dashboard_terrasse_page.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/view/facture_terrasse_page.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/view/prod_model_terrasse_page.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/view/table_commande_terrasse_page.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/view/table_consommation_terrasse_page.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/view/vente_effectue_terrasse_page.dart';
+import 'package:wm_com/src/pages/restaurants/terrasse/view/vente_terrasse_page.dart';
+import 'package:wm_com/src/pages/restaurants/vip/bindings/vip_binding.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/commande/detail_commande_vip.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/consommation/detail_consommation_vip.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/factures/detail_creance_vip.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/factures/detail_facture_vip.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/produit_model/ajout_product_vip_model.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/produit_model/detail_product_vip_model.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/produit_model/update_prod_model_vip_controller.dart';
+import 'package:wm_com/src/pages/restaurants/vip/components/vente_effectue/detail_vente_effectue_vip.dart';
+import 'package:wm_com/src/pages/restaurants/vip/view/dashboard_vip_page.dart';
+import 'package:wm_com/src/pages/restaurants/vip/view/facture_vip_page.dart';
+import 'package:wm_com/src/pages/restaurants/vip/view/prod_model_vip_page.dart';
+import 'package:wm_com/src/pages/restaurants/vip/view/table_commande_vip_page.dart';
+import 'package:wm_com/src/pages/restaurants/vip/view/table_consommation_vip_page.dart';
+import 'package:wm_com/src/pages/restaurants/vip/view/vente_effectue_vip_page.dart';
+import 'package:wm_com/src/pages/restaurants/vip/view/vente_vip_page.dart'; 
 import 'package:wm_com/src/pages/rh/binding/personnel_binding.dart';
 import 'package:wm_com/src/pages/rh/components/add_personnel.dart';
 import 'package:wm_com/src/pages/rh/components/detail_user.dart';
@@ -344,31 +410,25 @@ List<GetPage<dynamic>>? getPages = [
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
   GetPage(
-      name: ComRoutes.comStockGlobalLivraisonStock,
+      name: ComRoutes.comStockRavitaillement,
       binding: ComBinding(),
       page: () {
        final AchatModel achatModel = Get.arguments as AchatModel;
+        return RavitaillementStock(achatModel: achatModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: ComRoutes.comStockLivraison,
+      binding: ComBinding(),
+      page: () {
+        final AchatModel achatModel = Get.arguments as AchatModel;
         return LivraisonStock(achatModel: achatModel);
       },
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
 
-  GetPage(
-      name: ComRoutes.comRestitution,
-      binding: ComBinding(),
-      page: () => const RestitutionPage(),
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(seconds: 1)),
-  GetPage(
-      name: ComRoutes.comRestitutionDetail,
-      binding: ComBinding(),
-      page: () {
-        final RestitutionModel restitutionModel =
-            Get.arguments as RestitutionModel;
-        return DetailRestitution(restitutionModel: restitutionModel);
-      },
-      transition: Transition.cupertino,
-      transitionDuration: const Duration(seconds: 1)),
+ 
   GetPage(
       name: ComRoutes.comProduitModel,
       binding: ComBinding(),
@@ -573,6 +633,502 @@ List<GetPage<dynamic>>? getPages = [
       },
       transition: Transition.cupertino,
       transitionDuration: const Duration(seconds: 1)),
+
+  // Restaurant
+  GetPage(
+      name: RestaurantRoutes.dashboardRestaurant,
+      binding: RestaurantBinding(),
+      page: () => const DashboardRestPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.venteRestaurant,
+      binding: RestaurantBinding(),
+      page: () => const VenteRestaurantPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.tableCommandeRestaurant,
+      binding: RestaurantBinding(),
+      page: () => const TableCommandePage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.tableCommandeRestaurantDetail,
+      binding: RestaurantBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailCommande(tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.tableConsommationRestaurant,
+      binding: RestaurantBinding(),
+      page: () => const TableConsommationPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.tableConsommationRestaurantDetail,
+      binding: RestaurantBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailConsommation(tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: RestaurantRoutes.prodModelRestaurant,
+      binding: RestaurantBinding(),
+      page: () => const ProdModelRestaurantPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.prodModelRestaurantAdd,
+      binding: RestaurantBinding(),
+      page: () => const AjoutProdModelRest(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.prodModelRestaurantDetail,
+      binding: RestaurantBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return DetailProdModelRest(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.prodModelRestaurantUpdate,
+      binding: RestaurantBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return UpdateProdModelRest(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: RestaurantRoutes.factureRestaurant,
+      binding: RestaurantBinding(),
+      page: () => const FactureRestPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.factureRestaurantDetail,
+      binding: RestaurantBinding(),
+      page: () {
+        final FactureRestaurantModel factureRestaurantModel =
+            Get.arguments as FactureRestaurantModel;
+        return DetailFactureRestaurant(
+            factureRestaurantModel: factureRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.creanceRestaurantDetail,
+      binding: RestaurantBinding(),
+      page: () {
+        final CreanceRestaurantModel creanceRestaurantModel =
+            Get.arguments as CreanceRestaurantModel;
+        return DetailCreanceRestaurant(
+            creanceRestaurantModel: creanceRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.ventEffectueRestaurant,
+      binding: RestaurantBinding(),
+      page: () => const VenteEffectueRest(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: RestaurantRoutes.ventEffectueRestaurantDetail,
+      binding: RestaurantBinding(),
+      page: () {
+        final VenteRestaurantModel venteRestaurantModel =
+            Get.arguments as VenteRestaurantModel;
+        return DetailVenteEffectueRest(
+            venteRestaurantModel: venteRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  // Vip
+  GetPage(
+      name: VipRoutes.dashboardVip,
+      binding: VipBinding(),
+      page: () => const DashboardVipPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.venteVip,
+      binding: VipBinding(),
+      page: () => const VenteVipPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.tableCommandeVip,
+      binding: VipBinding(),
+      page: () => const TableCommandeVipPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.tableCommandeVipDetail,
+      binding: VipBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailCommandeVip(tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.tableConsommationVip,
+      binding: VipBinding(),
+      page: () => const TableConsommationVipPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.tableConsommationVipDetail,
+      binding: VipBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailConsommationVip(
+            tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: VipRoutes.prodModelVip,
+      binding: VipBinding(),
+      page: () => const ProdModelVipPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.prodModelVipAdd,
+      binding: VipBinding(),
+      page: () => const AjoutProdModelVip(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.prodModelVipDetail,
+      binding: VipBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return DetailProdModelVip(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.prodModelVipUpdate,
+      binding: VipBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return UpdateProdModelVip(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: VipRoutes.factureVip,
+      binding: VipBinding(),
+      page: () => const FactureVipPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.factureVipDetail,
+      binding: VipBinding(),
+      page: () {
+        final FactureRestaurantModel factureRestaurantModel =
+            Get.arguments as FactureRestaurantModel;
+        return DetailFactureVip(factureRestaurantModel: factureRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.creanceVipDetail,
+      binding: VipBinding(),
+      page: () {
+        final CreanceRestaurantModel creanceRestaurantModel =
+            Get.arguments as CreanceRestaurantModel;
+        return DetailCreanceVip(creanceRestaurantModel: creanceRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.ventEffectueVip,
+      binding: VipBinding(),
+      page: () => const VenteEffectueVip(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: VipRoutes.ventEffectueVipDetail,
+      binding: VipBinding(),
+      page: () {
+        final VenteRestaurantModel venteRestaurantModel =
+            Get.arguments as VenteRestaurantModel;
+        return DetailVenteEffectueVip(
+            venteRestaurantModel: venteRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  // Terrasse
+  GetPage(
+      name: TerrasseRoutes.dashboardTerrasse,
+      binding: TerrasseBinding(),
+      page: () => const DashboardTerrassePage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.venteTerrasse,
+      binding: TerrasseBinding(),
+      page: () => const VenteTerrassePage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.tableCommandeTerrasse,
+      binding: TerrasseBinding(),
+      page: () => const TableCommandeTerrassePage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.tableCommandeTerrasseDetail,
+      binding: TerrasseBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailCommandeTerrasse(
+            tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.tableConsommationTerrasse,
+      binding: TerrasseBinding(),
+      page: () => const TableConsommationTerrassePage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.tableConsommationTerrasseDetail,
+      binding: TerrasseBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailConsommationTerrasse(
+            tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: TerrasseRoutes.prodModelTerrasse,
+      binding: TerrasseBinding(),
+      page: () => const ProdModelTerrassePage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.prodModelTerrasseAdd,
+      binding: TerrasseBinding(),
+      page: () => const AjoutProdModelTerrasse(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.prodModelTerrasseDetail,
+      binding: TerrasseBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return DetailProdModelTerrasse(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.prodModelTerrasseUpdate,
+      binding: TerrasseBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return UpdateProdModelTerrasse(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: TerrasseRoutes.factureTerrasse,
+      binding: TerrasseBinding(),
+      page: () => const FactureTerrassePage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.factureTerrasseDetail,
+      binding: TerrasseBinding(),
+      page: () {
+        final FactureRestaurantModel factureRestaurantModel =
+            Get.arguments as FactureRestaurantModel;
+        return DetailFactureTerrasse(
+            factureRestaurantModel: factureRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.creanceTerrasseDetail,
+      binding: TerrasseBinding(),
+      page: () {
+        final CreanceRestaurantModel creanceRestaurantModel =
+            Get.arguments as CreanceRestaurantModel;
+        return DetailCreanceTerrasse(
+            creanceRestaurantModel: creanceRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.ventEffectueTerrasse,
+      binding: TerrasseBinding(),
+      page: () => const VenteEffectueTerrasse(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: TerrasseRoutes.ventEffectueTerrasseDetail,
+      binding: TerrasseBinding(),
+      page: () {
+        final VenteRestaurantModel venteRestaurantModel =
+            Get.arguments as VenteRestaurantModel;
+        return DetailVenteEffectueTerrasse(
+            venteRestaurantModel: venteRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  // Livraison
+  GetPage(
+      name: LivraisonRoutes.dashboardLivraison,
+      binding: LivraisonBinding(),
+      page: () => const DashboardLivraisonPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.venteLivraison,
+      binding: LivraisonBinding(),
+      page: () => const VenteLivraisonPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.tableCommandeLivraison,
+      binding: LivraisonBinding(),
+      page: () => const TableCommandeLivraisonPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.tableCommandeLivraisonDetail,
+      binding: LivraisonBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailCommandeLivraison(
+            tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.tableConsommationLivraison,
+      binding: LivraisonBinding(),
+      page: () => const TableConsommationLivraisonPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.tableConsommationLivraisonDetail,
+      binding: LivraisonBinding(),
+      page: () {
+        final TableRestaurantModel tableRestaurantModel =
+            Get.arguments as TableRestaurantModel;
+        return DetailConsommationLivraison(
+            tableRestaurantModel: tableRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: LivraisonRoutes.prodModelLivraison,
+      binding: LivraisonBinding(),
+      page: () => const ProdModelLivraisonPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.prodModelLivraisonAdd,
+      binding: LivraisonBinding(),
+      page: () => const AjoutProdModelLivraison(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.prodModelLivraisonDetail,
+      binding: LivraisonBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return DetailProdModelLivraison(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.prodModelLivraisonUpdate,
+      binding: LivraisonBinding(),
+      page: () {
+        final ProductModel productModel = Get.arguments as ProductModel;
+        return UpdateProdModelLivraison(productModel: productModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
+  GetPage(
+      name: LivraisonRoutes.factureLivraison,
+      binding: LivraisonBinding(),
+      page: () => const FactureLivraisonPage(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.factureLivraisonDetail,
+      binding: LivraisonBinding(),
+      page: () {
+        final FactureRestaurantModel factureRestaurantModel =
+            Get.arguments as FactureRestaurantModel;
+        return DetailFactureLivraison(
+            factureRestaurantModel: factureRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.creanceLivraisonDetail,
+      binding: LivraisonBinding(),
+      page: () {
+        final CreanceRestaurantModel creanceRestaurantModel =
+            Get.arguments as CreanceRestaurantModel;
+        return DetailCreanceLivraison(
+            creanceRestaurantModel: creanceRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.ventEffectueLivraison,
+      binding: LivraisonBinding(),
+      page: () => const VenteEffectueLivraison(),
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+  GetPage(
+      name: LivraisonRoutes.ventEffectueLivraisonDetail,
+      binding: LivraisonBinding(),
+      page: () {
+        final VenteRestaurantModel venteRestaurantModel =
+            Get.arguments as VenteRestaurantModel;
+        return DetailVenteEffectueLivraison(
+            venteRestaurantModel: venteRestaurantModel);
+      },
+      transition: Transition.cupertino,
+      transitionDuration: const Duration(seconds: 1)),
+
 
   // RH
   GetPage(

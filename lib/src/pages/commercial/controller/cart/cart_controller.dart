@@ -170,8 +170,8 @@ class CartController extends GetxController with StateMixin<List<CartModel>> {
             signature: achat.signature,
             created: achat.created,
             business: achat.business,
-            sync: "upadte",
-            async: "new");
+            sync: "update",
+            async: "update");
         await stockStore.updateData(achatModel).then((value) {
           clear();
           cartList.clear();
@@ -472,7 +472,7 @@ class CartController extends GetxController with StateMixin<List<CartModel>> {
           created: achatCreated,
           business: InfoSystem().business(),
           sync: "update",
-          async: "new");
+          async: "update");
       await stockStore.updateData(achatModel);
       deleteData(cart);
       _isLoadingCancel.value = false;

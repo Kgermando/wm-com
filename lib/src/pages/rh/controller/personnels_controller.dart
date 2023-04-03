@@ -130,7 +130,6 @@ class PersonnelsController extends GetxController
     });
   }
 
-
   detailView(int id) async {
     _isLoading.value = true;
     final data = await personnelStore.getOneData(id);
@@ -443,7 +442,6 @@ class PersonnelsController extends GetxController
     }
   }
 
-
   void syncDataDown() async {
     try {
       _isLoading.value = true;
@@ -493,6 +491,223 @@ class PersonnelsController extends GetxController
         }
       }).toList();
       _isLoading.value = false;
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+  }
+
+  void syncData() async {
+    try {
+      _isLoading.value = true;
+      var dataCloudList = await personnelsApi.getAllData();
+      var dataList = personnelsList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          personnelsList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = AgentModel(
+              nom: element.nom,
+              postNom: element.postNom,
+              prenom: element.prenom,
+              email: element.email,
+              telephone: element.telephone,
+              adresse: element.adresse,
+              sexe: element.sexe,
+              role: element.role,
+              matricule: element.matricule,
+              dateNaissance: element.dateNaissance,
+              lieuNaissance: element.lieuNaissance,
+              nationalite: element.nationalite,
+              typeContrat: element.typeContrat,
+              departement: element.departement,
+              servicesAffectation: element.servicesAffectation,
+              dateDebutContrat: element.dateDebutContrat,
+              dateFinContrat: element.dateFinContrat,
+              fonctionOccupe: element.fonctionOccupe,
+              statutAgent: element.statutAgent,
+              createdAt: element.createdAt,
+              salaire: element.salaire,
+              signature: element.signature,
+              created: element.created,
+              isDelete: element.isDelete,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await personnelsApi.insertData(dataItem).then((value) async {
+              AgentModel dataModel = dataList
+                  .where((p0) => p0.matricule == value.matricule).last;
+              final dataItem = AgentModel(
+                id: dataModel.id,
+                nom: dataModel.nom,
+                postNom: dataModel.postNom,
+                prenom: dataModel.prenom,
+                email: dataModel.email,
+                telephone: dataModel.telephone,
+                adresse: dataModel.adresse,
+                sexe: dataModel.sexe,
+                role: dataModel.role,
+                matricule: dataModel.matricule,
+                dateNaissance: dataModel.dateNaissance,
+                lieuNaissance: dataModel.lieuNaissance,
+                nationalite: dataModel.nationalite,
+                typeContrat: dataModel.typeContrat,
+                departement: dataModel.departement,
+                servicesAffectation: dataModel.servicesAffectation,
+                dateDebutContrat: dataModel.dateDebutContrat,
+                dateFinContrat: dataModel.dateFinContrat,
+                fonctionOccupe: dataModel.fonctionOccupe,
+                statutAgent: dataModel.statutAgent,
+                createdAt: dataModel.createdAt,
+                salaire: dataModel.salaire,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                isDelete: dataModel.isDelete,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await personnelStore.updateData(dataItem).then((value) {
+                personnelsList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up personnelsList ok');
+                }
+              });
+            });
+          }
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (personnelsList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = AgentModel(
+              nom: element.nom,
+              postNom: element.postNom,
+              prenom: element.prenom,
+              email: element.email,
+              telephone: element.telephone,
+              adresse: element.adresse,
+              sexe: element.sexe,
+              role: element.role,
+              matricule: element.matricule,
+              dateNaissance: element.dateNaissance,
+              lieuNaissance: element.lieuNaissance,
+              nationalite: element.nationalite,
+              typeContrat: element.typeContrat,
+              departement: element.departement,
+              servicesAffectation: element.servicesAffectation,
+              dateDebutContrat: element.dateDebutContrat,
+              dateFinContrat: element.dateFinContrat,
+              fonctionOccupe: element.fonctionOccupe,
+              statutAgent: element.statutAgent,
+              createdAt: element.createdAt,
+              salaire: element.salaire,
+              signature: element.signature,
+              created: element.created,
+              isDelete: element.isDelete,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await personnelStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download personnelsList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = AgentModel(
+                    id: e.id,
+                    nom: element.nom,
+                    postNom: element.postNom,
+                    prenom: element.prenom,
+                    email: element.email,
+                    telephone: element.telephone,
+                    adresse: element.adresse,
+                    sexe: element.sexe,
+                    role: element.role,
+                    matricule: element.matricule,
+                    dateNaissance: element.dateNaissance,
+                    lieuNaissance: element.lieuNaissance,
+                    nationalite: element.nationalite,
+                    typeContrat: element.typeContrat,
+                    departement: element.departement,
+                    servicesAffectation: element.servicesAffectation,
+                    dateDebutContrat: element.dateDebutContrat,
+                    dateFinContrat: element.dateFinContrat,
+                    fonctionOccupe: element.fonctionOccupe,
+                    statutAgent: element.statutAgent,
+                    createdAt: element.createdAt,
+                    salaire: element.salaire,
+                    signature: element.signature,
+                    created: element.created,
+                    isDelete: element.isDelete,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await personnelsApi.updateData(dataItem).then((value) async {
+                    AgentModel dataModel = dataList
+                        .where((p0) => p0.matricule == value.matricule)
+                        .last;
+                    final dataItem = AgentModel(
+                      id: dataModel.id,
+                      nom: dataModel.nom,
+                      postNom: dataModel.postNom,
+                      prenom: dataModel.prenom,
+                      email: dataModel.email,
+                      telephone: dataModel.telephone,
+                      adresse: dataModel.adresse,
+                      sexe: dataModel.sexe,
+                      role: dataModel.role,
+                      matricule: dataModel.matricule,
+                      dateNaissance: dataModel.dateNaissance,
+                      lieuNaissance: dataModel.lieuNaissance,
+                      nationalite: dataModel.nationalite,
+                      typeContrat: dataModel.typeContrat,
+                      departement: dataModel.departement,
+                      servicesAffectation: dataModel.servicesAffectation,
+                      dateDebutContrat: dataModel.dateDebutContrat,
+                      dateFinContrat: dataModel.dateFinContrat,
+                      fonctionOccupe: dataModel.fonctionOccupe,
+                      statutAgent: dataModel.statutAgent,
+                      createdAt: dataModel.createdAt,
+                      salaire: dataModel.salaire,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      isDelete: dataModel.isDelete,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    ); 
+                    await personnelStore.updateData(dataItem).then((value) {
+                      personnelsList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up personnelsList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",

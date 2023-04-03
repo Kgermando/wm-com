@@ -26,12 +26,6 @@ class HistoryRavitaillementController extends GetxController
     getList();
   }
 
-  // @override
-  // void refresh() {
-  //   getList();
-  //   super.refresh();
-  // }
-
   void getList() async {
     await historyRavitaillementStore.getAllData().then((response) {
       historyRavitaillementList.clear();
@@ -70,40 +64,158 @@ class HistoryRavitaillementController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
-    var dataCloudList = await historyRavitaillementApi.getAllData();
-        dataCloudList.map((e) async {
-          if (!historyRavitaillementList.contains(e)) {
-            if (dataCloudList.isNotEmpty) {
+      var dataCloudList = await historyRavitaillementApi.getAllData();
+      var dataList =
+          historyRavitaillementList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          historyRavitaillementList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = HistoryRavitaillementModel(
+              idProduct: element.idProduct,
+              quantity: element.quantity,
+              quantityAchat: element.quantityAchat,
+              priceAchatUnit: element.priceAchatUnit,
+              prixVenteUnit: element.prixVenteUnit,
+              unite: element.unite,
+              margeBen: element.margeBen,
+              tva: element.tva,
+              qtyRavitailler: element.qtyRavitailler,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            ); 
+            await historyRavitaillementApi
+                .insertData(dataItem)
+                .then((value) async {
+              HistoryRavitaillementModel dataModel =
+                  dataList.where((p0) => p0.idProduct == value.idProduct).last;
               final dataItem = HistoryRavitaillementModel(
-                idProduct: e.idProduct,
-                quantity: e.quantity,
-                quantityAchat: e.quantityAchat,
-                priceAchatUnit: e.priceAchatUnit,
-                prixVenteUnit: e.prixVenteUnit,
-                unite: e.unite,
-                margeBen: e.margeBen,
-                tva: e.tva,
-                qtyRavitailler: e.qtyRavitailler,
-                succursale: e.succursale,
-                signature: e.signature,
-                created: e.created,
-                business: e.business,
-                sync: e.sync,
-                async: 'saved',
-              ); 
-              await historyRavitaillementStore.insertData(dataItem).then((value) {
+                id: dataModel.id,
+                idProduct: dataModel.idProduct,
+                quantity: dataModel.quantity,
+                quantityAchat: dataModel.quantityAchat,
+                priceAchatUnit: dataModel.priceAchatUnit,
+                prixVenteUnit: dataModel.prixVenteUnit,
+                unite: dataModel.unite,
+                margeBen: dataModel.margeBen,
+                tva: dataModel.tva,
+                qtyRavitailler: dataModel.qtyRavitailler,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await historyRavitaillementStore.updateData(dataItem).then((value) {
+                historyRavitaillementList.clear();
                 getList();
                 if (kDebugMode) {
-                  print('Sync Down historyLivraison ok');
+                  print('Sync up historyRavitaillementList ok');
                 }
               });
-            }
+            });
           }
-        }).toList();
-      _isLoading.value = false;
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (historyRavitaillementList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = HistoryRavitaillementModel(
+              idProduct: element.idProduct,
+              quantity: element.quantity,
+              quantityAchat: element.quantityAchat,
+              priceAchatUnit: element.priceAchatUnit,
+              prixVenteUnit: element.prixVenteUnit,
+              unite: element.unite,
+              margeBen: element.margeBen,
+              tva: element.tva,
+              qtyRavitailler: element.qtyRavitailler,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await historyRavitaillementStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download historyRavitaillementList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.idProduct == element.idProduct) {
+                  final dataItem = HistoryRavitaillementModel(
+                    id: e.id,
+                    idProduct: element.idProduct,
+                    quantity: element.quantity,
+                    quantityAchat: element.quantityAchat,
+                    priceAchatUnit: element.priceAchatUnit,
+                    prixVenteUnit: element.prixVenteUnit,
+                    unite: element.unite,
+                    margeBen: element.margeBen,
+                    tva: element.tva,
+                    qtyRavitailler: element.qtyRavitailler,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await historyRavitaillementApi
+                      .updateData(dataItem)
+                      .then((value) async {
+                    HistoryRavitaillementModel dataModel = dataList
+                        .where((p0) => p0.idProduct == value.idProduct)
+                        .last;
+                    final dataItem = HistoryRavitaillementModel(
+                      id: dataModel.id,
+                      idProduct: dataModel.idProduct,
+                      quantity: dataModel.quantity,
+                      quantityAchat: dataModel.quantityAchat,
+                      priceAchatUnit: dataModel.priceAchatUnit,
+                      prixVenteUnit: dataModel.prixVenteUnit,
+                      unite: dataModel.unite,
+                      margeBen: dataModel.margeBen,
+                      tva: dataModel.tva,
+                      qtyRavitailler: dataModel.qtyRavitailler,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await historyRavitaillementStore.updateData(dataItem).then((value) {
+                      historyRavitaillementList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up historyRavitaillementList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",
@@ -111,6 +223,5 @@ class HistoryRavitaillementController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
-    
   }
 }

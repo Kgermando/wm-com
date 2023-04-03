@@ -218,7 +218,7 @@ class _DetailAchatState extends State<DetailAchat> {
           children: [
             Row(
               children: [
-                Text('Quantité entrant',
+                Text('Quantité entrée',
                     style: Responsive.isDesktop(context)
                         ? const TextStyle(
                             fontWeight: FontWeight.w700, fontSize: 20)
@@ -497,6 +497,7 @@ class _DetailAchatState extends State<DetailAchat> {
   }
 
   Widget ventes(List<VenteCartModel> state) {
+    final headlineSmall = Theme.of(context).textTheme.headlineSmall;
     final bodyMedium = Theme.of(context).textTheme.bodyMedium;
     final bodySmall = Theme.of(context).textTheme.bodySmall;
 
@@ -545,15 +546,13 @@ class _DetailAchatState extends State<DetailAchat> {
               Text(
                   '${NumberFormat.decimalPattern('fr').format(double.parse(qtyVendus.toStringAsFixed(0)))} ${widget.achatModel.unite}',
                   style: Responsive.isDesktop(context)
-                      ? const TextStyle(
-                          fontWeight: FontWeight.w700, fontSize: 20)
-                      : bodyMedium),
+                      ? headlineSmall!.copyWith(color: Colors.blueGrey)
+                      : bodyMedium!.copyWith(color: Colors.blueGrey)),
               Text(
                   '${NumberFormat.decimalPattern('fr').format(double.parse(prixTotalVendu.toStringAsFixed(2)))} ${monnaieStorage.monney}',
                   style: Responsive.isDesktop(context)
-                      ? const TextStyle(
-                          fontWeight: FontWeight.w700, fontSize: 20)
-                      : bodyMedium),
+                      ? headlineSmall!.copyWith(color: Colors.blueGrey)
+                      : bodyMedium!.copyWith(color: Colors.blueGrey)),
             ],
           ),
         ],
@@ -710,13 +709,13 @@ class _DetailAchatState extends State<DetailAchat> {
       openBackgroundColor: themeColor,
       speedDialChildren: <SpeedDialChild>[
         SpeedDialChild(
-          child: const Icon(Icons.reply),
+          child: const Icon(Icons.delivery_dining),
           foregroundColor: Colors.white,
           backgroundColor: Colors.green.shade700,
           label: 'Ravitaillement stock',
           onPressed: () {
-           Get.toNamed(ComRoutes.comStockGlobalRavitaillement,
-                arguments: widget.achatModel);
+           Get.toNamed(ComRoutes.comStockRavitaillement,
+                arguments: widget.achatModel); 
           },
         ),
         SpeedDialChild(
@@ -725,7 +724,7 @@ class _DetailAchatState extends State<DetailAchat> {
             backgroundColor: Colors.blue.shade700,
             label: 'Livraison stock',
             onPressed: () {
-              Get.toNamed(ComRoutes.comStockGlobalLivraisonStock,
+              Get.toNamed(ComRoutes.comStockLivraison,
                   arguments: widget.achatModel);
             }),
       ],

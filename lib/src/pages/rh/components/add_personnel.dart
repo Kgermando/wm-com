@@ -448,49 +448,54 @@ class _AddPersonnelState extends State<AddPersonnel> {
         margin: const EdgeInsets.only(bottom: p20),
         child: TextButton.icon(
             onPressed: () async {
-              dateTime = await showOmniDateTimePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                type: OmniDateTimePickerType.date,
-                firstDate: DateTime(1600).subtract(const Duration(days: 3652)),
-                lastDate: DateTime.now().add(
-                  const Duration(days: 3652),
-                ),
-                is24HourMode: false,
-                isShowSeconds: false,
-                minutesInterval: 1,
-                secondsInterval: 1,
-                borderRadius: const BorderRadius.all(Radius.circular(16)),
-                constraints: const BoxConstraints(
-                  maxWidth: 350,
-                  maxHeight: 650,
-                ),
-                transitionBuilder: (context, anim1, anim2, child) {
-                  return FadeTransition(
-                    opacity: anim1.drive(
-                      Tween(
-                        begin: 0,
-                        end: 1,
+                  dateTime = await showOmniDateTimePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  type: OmniDateTimePickerType.date,
+                  firstDate: DateTime(1600).subtract(const Duration(days: 3652)),
+                  lastDate: DateTime.now().add(
+                    const Duration(days: 3652),
+                  ),
+                  is24HourMode: false,
+                  isShowSeconds: false,
+                  minutesInterval: 1,
+                  secondsInterval: 1,
+                  borderRadius: const BorderRadius.all(Radius.circular(16)),
+                  constraints: const BoxConstraints(
+                    maxWidth: 350,
+                    maxHeight: 650,
+                  ),
+                  transitionBuilder: (context, anim1, anim2, child) {
+                    return FadeTransition(
+                      opacity: anim1.drive(
+                        Tween(
+                          begin: 0,
+                          end: 1,
+                        ),
                       ),
-                    ),
-                    child: child,
-                  );
-                },
-                transitionDuration: const Duration(milliseconds: 200),
-                barrierDismissible: true,
-                selectableDayPredicate: (dateTime) {
-                  // Disable 25th Feb 2023
-                  if (dateTime == DateTime(2023, 2, 25)) {
-                    return false;
-                  } else {
-                    return true;
-                  }
-                },
-              );
-              controller.dateNaissanceController = dateTime;
+                      child: child,
+                    );
+                  },
+                  transitionDuration: const Duration(milliseconds: 200),
+                  barrierDismissible: true,
+                  selectableDayPredicate: (dateTime) {
+                    // Disable 25th Feb 2023
+                    if (dateTime == DateTime(2023, 2, 25)) {
+                      return false;
+                    } else {
+                      return true;
+                    }
+                  },
+                );
+
+               setState(() {
+                  controller.dateNaissanceController = dateTime;
+                });
             },
             icon: const Icon(Icons.calendar_month),
-            label: const Text("Date de Naissance")));
+            label: (controller.dateNaissanceController == null)
+                ? const Text("Date de naissance")
+                : Text("${controller.dateNaissanceController}")));
   }
 
   Widget lieuNaissanceWidget() {
@@ -658,10 +663,15 @@ class _AddPersonnelState extends State<AddPersonnel> {
                   }
                 },
               );
-              controller.dateDebutContratController = dateTime;
+              setState(() {
+                controller.dateDebutContratController = dateTime;
+              });
+              
             },
             icon: const Icon(Icons.calendar_month),
-            label: const Text("Date Debut Contrat")));
+            label: (controller.dateNaissanceController == null)
+                ? const Text("Date Debut Contrat")
+                : Text("${controller.dateNaissanceController}"))); 
   }
 
   Widget dateFinContratWidget() {
@@ -708,10 +718,16 @@ class _AddPersonnelState extends State<AddPersonnel> {
                   }
                 },
               );
-              controller.dateFinContratController = dateTime;
+              setState(() {
+                controller.dateFinContratController = dateTime;
+              });
+              
             },
             icon: const Icon(Icons.calendar_month),
-            label: const Text("Date Fin Contrat")));
+            label: (controller.dateNaissanceController == null)
+                ? const Text("Date Fin Contrat")
+                : Text("${controller.dateNaissanceController}")));
+ 
   }
 
   Widget fonctionOccupeWidget() {

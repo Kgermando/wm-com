@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wm_com/src/controllers/departement_notify_controller.dart';
+import 'package:wm_com/src/controllers/network_controller.dart';
 import 'package:wm_com/src/navigation/drawer/components/update_nav.dart';
 import 'package:wm_com/src/navigation/drawer/drawer_widget.dart';
 import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
@@ -14,14 +15,15 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
   Widget build(BuildContext context) {
     final currentRoute = Get.currentRoute;
     final bodyMedium = Theme.of(context).textTheme.bodyMedium;
-    final ProfilController profilController = Get.find();
+    final ProfilController profilController = Get.find(); 
+    final NetworkController networkController = Get.find(); 
 
     return Drawer(
         child: profilController.obx(
             onLoading: loadingDrawer(),
             onError: (error) => loadingError(context, error!), (user) {
       int userRole = int.parse(profilController.user.role);
-      return ListView(
+      return Obx(() => ListView(
         shrinkWrap: true,
         children: [
           InkWell(
@@ -43,42 +45,6 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
                 Get.toNamed(ComRoutes.comDashboard);
               }),
           DrawerWidget(
-              selected: currentRoute == ComRoutes.comSuccursale,
-              icon: Icons.shopping_basket_sharp,
-              sizeIcon: 15.0,
-              title: 'Succursale',
-              style: bodyMedium,
-              onTap: () {
-                Get.toNamed(ComRoutes.comSuccursale);
-              }),
-          DrawerWidget(
-              selected: currentRoute == ComRoutes.comAchat,
-              icon: Icons.shopping_basket_sharp,
-              sizeIcon: 15.0,
-              title: 'Stock',
-              style: bodyMedium,
-              onTap: () {
-                Get.toNamed(ComRoutes.comAchat);
-              }), 
-          DrawerWidget(
-              selected: currentRoute == ComRoutes.comBonLivraison,
-              icon: Icons.shopping_basket_sharp,
-              sizeIcon: 15.0,
-              title: 'Bon livraison',
-              style: bodyMedium,
-              onTap: () {
-                Get.toNamed(ComRoutes.comBonLivraison);
-              }),
-          DrawerWidget(
-              selected: currentRoute == ComRoutes.comRestitution,
-              icon: Icons.shopping_basket_sharp,
-              sizeIcon: 15.0,
-              title: 'Bon restitution',
-              style: bodyMedium,
-              onTap: () {
-                Get.toNamed(ComRoutes.comRestitution);
-              }),
-          DrawerWidget(
               selected: currentRoute == ComRoutes.comVente,
               icon: Icons.shopping_basket_sharp,
               sizeIcon: 15.0,
@@ -96,7 +62,34 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
               onTap: () {
                 Get.toNamed(ComRoutes.comCart);
               }),
-         
+          DrawerWidget(
+              selected: currentRoute == ComRoutes.comSuccursale,
+              icon: Icons.store,
+              sizeIcon: 15.0,
+              title: 'Succursale',
+              style: bodyMedium,
+              onTap: () {
+                Get.toNamed(ComRoutes.comSuccursale);
+              }),
+          DrawerWidget(
+              selected: currentRoute == ComRoutes.comAchat,
+              icon: Icons.shopping_basket_sharp,
+              sizeIcon: 15.0,
+              title: 'Stock',
+              style: bodyMedium,
+              onTap: () {
+                Get.toNamed(ComRoutes.comAchat);
+              }),
+          if (networkController.connectionStatus == 1)
+          DrawerWidget(
+              selected: currentRoute == ComRoutes.comBonLivraison,
+              icon: Icons.shopping_basket_sharp,
+              sizeIcon: 15.0,
+              title: 'Bon livraison',
+              style: bodyMedium,
+              onTap: () {
+                Get.toNamed(ComRoutes.comBonLivraison);
+              }),
           DrawerWidget(
               selected: currentRoute == ComRoutes.comFacture,
               icon: Icons.receipt_long,
@@ -111,7 +104,7 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
                 selected: currentRoute == ComRoutes.comProduitModel,
                 icon: Icons.verified,
                 sizeIcon: 15.0,
-                title: 'Identifiant Produit',
+                title: 'Produits',
                 style: bodyMedium,
                 onTap: () {
                   Get.toNamed(ComRoutes.comProduitModel);
@@ -120,7 +113,7 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
               selected: currentRoute == ComRoutes.comVenteEffectue,
               icon: Icons.checklist_rtl,
               sizeIcon: 15.0,
-              title: 'Historique de Ventes',
+              title: 'Hist. de Ventes',
               style: bodyMedium,
               onTap: () {
                 Get.toNamed(ComRoutes.comVenteEffectue);
@@ -130,7 +123,7 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
                 selected: currentRoute == ComRoutes.comHistoryRavitaillement,
                 icon: Icons.history,
                 sizeIcon: 15.0,
-                title: 'Historique de ravitaillements',
+                title: 'Ravitaillements',
                 style: bodyMedium,
                 onTap: () {
                   Get.toNamed(ComRoutes.comHistoryRavitaillement);
@@ -140,7 +133,7 @@ class DrawerMenuCommercial extends GetView<DepartementNotifyCOntroller> {
               currentRoute: currentRoute,
             )
         ],
-      );
+      )) ;
     }));
   }
 }

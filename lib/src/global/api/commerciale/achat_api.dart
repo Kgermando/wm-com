@@ -63,7 +63,6 @@ class AchatApi extends GetConnect {
     var data = achatModel.toJson();
     var body = jsonEncode(data);
     var updateUrl = Uri.parse("$mainUrl/achats/update-achat/");
-
     var res = await client.put(updateUrl, headers: header, body: body);
     if (res.statusCode == 200) {
       return AchatModel.fromJson(json.decode(res.body));

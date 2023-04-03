@@ -26,7 +26,7 @@ class _AddAchatState extends State<AddAchat> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Commercial";
   String subTitle = "Ajout stock";
-
+ 
   String uniteProd = '-';
 
   @override
@@ -140,8 +140,9 @@ class _AddAchatState extends State<AddAchat> {
           }).toList(),
           onChanged: (value) {
             setState(() {
+              controller.idProduct = null;
               controller.idProduct = value!;
-              uniteProd = controller.idProduct!.split('-').elementAt(1);
+              uniteProd = controller.idProduct!.split('-').last; 
             });
           },
         ),
@@ -164,7 +165,7 @@ class _AddAchatState extends State<AddAchat> {
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                 ],
                 decoration: InputDecoration(
-                  labelText: 'Quantité entrer',
+                  labelText: 'Quantité entrée',
                   labelStyle: const TextStyle(),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(5.0),
@@ -268,7 +269,7 @@ class _AddAchatState extends State<AddAchat> {
               },
               onChanged: (value) => setState(() {
                 controller.prixVenteUnit =
-                    (value == "") ? 1 : double.parse(value);
+                    (value == "") ? 0 : double.parse(value);
               }),
             ),
           ),

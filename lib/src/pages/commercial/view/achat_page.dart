@@ -25,7 +25,6 @@ class _AchatPageState extends State<AchatPage> {
   @override
   Widget build(BuildContext context) {
     final AchatController controller = Get.find();
-    final bodyMedium = Theme.of(context).textTheme.bodyMedium;
     return Scaffold(
         key: scaffoldKey,
         appBar: headerBar(context, scaffoldKey, title, subTitle),
@@ -39,9 +38,21 @@ class _AchatPageState extends State<AchatPage> {
                     Get.toNamed(ComRoutes.comAchatAdd);
                   }
                   if (controller.profilController.user.succursale == '-') {
-                    Get.dialog(Text(
-                        "Veillez affecter une succursale a votre profil",
-                        style: bodyMedium));
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Votre profil manque de succursale',
+                            style: TextStyle(color: Colors.blue)),
+                        content: const Text(
+                            'Veillez affecter une succursale a votre profil.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'ok'),
+                            child: const Text('ok'),
+                          ),
+                        ],
+                      ),
+                    );
                   }
                 })
             : FloatingActionButton.extended(
@@ -53,9 +64,21 @@ class _AchatPageState extends State<AchatPage> {
                     Get.toNamed(ComRoutes.comAchatAdd);
                   }
                   if (controller.profilController.user.succursale == '-') {
-                    Get.dialog(Text(
-                        "Veillez affecter une succursale a votre profil",
-                        style: bodyMedium));
+                    showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        title: const Text('Votre profil manque de succursale',
+                            style: TextStyle(color: Colors.blue)),
+                        content: const Text(
+                            'Veillez affecter une succursale a votre profil.'),
+                        actions: <Widget>[
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'ok'),
+                            child: const Text('ok'),
+                          ),
+                        ],
+                      ),
+                    );
                   }
                 }),
         body: Row(
@@ -86,6 +109,7 @@ class _AchatPageState extends State<AchatPage> {
                                         IconButton(
                                             onPressed: () {
                                               controller.getList();
+                                              // controller.syncDataDown();
                                             },
                                             icon: const Icon(Icons.refresh,
                                                 color: Colors.green))

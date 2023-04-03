@@ -122,7 +122,7 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
     try {
       _isLoading.value = true;
       var uniteProd = idProduct!.split('-');
-      var unite = uniteProd.elementAt(1);
+      var unite = uniteProd.last;
       var remisePourcent = (prixVenteUnit * remise) / 100;
       var remisePourcentToMontant = prixVenteUnit - remisePourcent;
 
@@ -167,7 +167,7 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
     try {
       _isLoading.value = true;
       var uniteProd = idProduct!.split('-');
-      var unite = uniteProd.elementAt(1);
+      var unite = uniteProd.last;
       var remisePourcent = (prixVenteUnit * remise) / 100;
       var remisePourcentToMontant = prixVenteUnit - remisePourcent;
 
@@ -187,7 +187,7 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
           created: data.created,
           business: data.business,
           sync: "update",
-          async: "new");
+          async: "update");
       await stockStore.updateData(dataItem).then((value) {
         clear();
         getList();
@@ -208,83 +208,318 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
     }
   }
 
-  void syncDataDown() async {
+  // void syncDataDown() async {
+  //   try {
+  //     _isLoading.value = true;
+  //     var dataCloudList = await achatApi.getAllData();
+  //     print("dataCloudList $dataCloudList");
+  //     dataCloudList.map((e) async {
+  //       var dataLocalList =
+  //           achatList.where((p0) => p0.idProduct == e.idProduct).toList();
+  //       print("dataLocalList $dataLocalList");
+
+  //       if (!achatList.contains(e)) {
+  //         if (dataCloudList.isNotEmpty) {
+  //           final dataItem = AchatModel(
+  //             idProduct: e.idProduct,
+  //             quantity: e.quantity,
+  //             quantityAchat: e.quantityAchat,
+  //             priceAchatUnit: e.priceAchatUnit,
+  //             prixVenteUnit: e.prixVenteUnit,
+  //             unite: e.unite,
+  //             tva: e.tva,
+  //             remise: e.remise,
+  //             qtyRemise: e.qtyRemise,
+  //             qtyLivre: e.qtyLivre,
+  //             succursale: e.succursale,
+  //             signature: e.signature,
+  //             created: e.created,
+  //             business: e.business,
+  //             sync: e.sync,
+  //             async: 'saved',
+  //           );
+  //           await stockStore.insertData(dataItem).then((value) {
+  //             getList();
+  //             if (kDebugMode) {
+  //               print('Sync Down succursale ok');
+  //             }
+  //           });
+  //         }
+  //       }
+  //       if (achatList.contains(e)) {
+  //         if (dataCloudList.isNotEmpty) {
+  //           for (var element in achatList) {
+  //             if (e.idProduct == element.idProduct) {
+  //               double qty =
+  //                   double.parse(element.quantity) + double.parse(e.quantity);
+  //               final dataItem = AchatModel(
+  //                 id: e.id,
+  //                 idProduct: e.idProduct,
+  //                 quantity: qty.toString(),
+  //                 quantityAchat: e.quantityAchat,
+  //                 priceAchatUnit: e.priceAchatUnit,
+  //                 prixVenteUnit: e.prixVenteUnit,
+  //                 unite: e.unite,
+  //                 tva: e.tva,
+  //                 remise: e.remise,
+  //                 qtyRemise: e.qtyRemise,
+  //                 qtyLivre: e.qtyLivre,
+  //                 succursale: e.succursale,
+  //                 signature: e.signature,
+  //                 created: e.created,
+  //                 business: e.business,
+  //                 sync: e.sync,
+  //                 async: 'saved',
+  //               );
+  //               await stockStore.updateData(dataItem).then((value) {
+  //                 getList();
+  //                 if (kDebugMode) {
+  //                   print('Sync Down stock ok');
+  //                 }
+  //               });
+  //             }
+  //           }
+  //         }
+  //       }
+  //     }).toList();
+  //     _isLoading.value = false;
+  //   } catch (e) {
+  //     _isLoading.value = false;
+  //     Get.snackbar("Erreur de la synchronisation", "$e",
+  //         backgroundColor: Colors.red,
+  //         icon: const Icon(Icons.check),
+  //         snackPosition: SnackPosition.TOP);
+  //   }
+  // }
+
+  void syncData() async {
     try {
       _isLoading.value = true;
-        var dataCloudList = await achatApi.getAllData();
-        dataCloudList.map((e) async {
-          if (!achatList.contains(e)) {
-            if (dataCloudList.isNotEmpty) {
+      var dataCloudList = await achatApi.getAllData();
+      var dataList = achatList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          achatList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = AchatModel(
+              idProduct: element.idProduct,
+              quantity: element.quantity,
+              quantityAchat: element.quantityAchat,
+              priceAchatUnit: element.priceAchatUnit,
+              prixVenteUnit: element.prixVenteUnit,
+              unite: element.unite,
+              tva: element.tva,
+              remise: element.remise,
+              qtyRemise: element.qtyRemise,
+              qtyLivre: element.qtyLivre,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await achatApi.insertData(dataItem).then((value) async {
+              AchatModel achatModel =
+                  achatList.where((p0) => p0.idProduct == value.idProduct).last;
               final dataItem = AchatModel(
-                idProduct: e.idProduct,
-                quantity: e.quantity,
-                quantityAchat: e.quantityAchat,
-                priceAchatUnit: e.priceAchatUnit,
-                prixVenteUnit: e.prixVenteUnit,
-                unite: e.unite,
-                tva: e.tva,
-                remise: e.remise,
-                qtyRemise: e.qtyRemise,
-                qtyLivre: e.qtyLivre,
-                succursale: e.succursale,
-                signature: e.signature,
-                created: e.created,
-                business: e.business,
-                sync: e.sync,
-                async: 'saved',
+                id: achatModel.id,
+                idProduct: achatModel.idProduct,
+                quantity: achatModel.quantity,
+                quantityAchat: achatModel.quantityAchat,
+                priceAchatUnit: achatModel.priceAchatUnit,
+                prixVenteUnit: achatModel.prixVenteUnit,
+                unite: achatModel.unite,
+                tva: achatModel.tva,
+                remise: achatModel.remise,
+                qtyRemise: achatModel.qtyRemise,
+                qtyLivre: achatModel.qtyLivre,
+                succursale: achatModel.succursale,
+                signature: achatModel.signature,
+                created: achatModel.created,
+                business: achatModel.business,
+                sync: "sync",
+                async: achatModel.async,
               );
-              await stockStore.insertData(dataItem).then((value) {
+              await stockStore.updateData(dataItem).then((value) {
+                achatList.clear();
                 getList();
                 if (kDebugMode) {
-                  print('Sync Down succursale ok');
+                  print('Sync up stock ok');
                 }
               });
-            } 
+            });
           }
-          if (achatList.contains(e)) {
-            if (dataCloudList.isNotEmpty) {
-              for (var element in achatList) {
+        }
+      } else {
+        print('Sync up dataUpdateList $dataUpdateList');
+        if (achatList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = AchatModel(
+              idProduct: element.idProduct,
+              quantity: element.quantity,
+              quantityAchat: element.quantityAchat,
+              priceAchatUnit: element.priceAchatUnit,
+              prixVenteUnit: element.prixVenteUnit,
+              unite: element.unite,
+              tva: element.tva,
+              remise: element.remise,
+              qtyRemise: element.qtyRemise,
+              qtyLivre: element.qtyLivre,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await stockStore.insertData(dataItem).then((value) {
+              print("download stock ok");
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                print('Sync up stock ${element.sync}');
                 if (e.idProduct == element.idProduct) {
-                  double qty =
-                      double.parse(element.quantity) + double.parse(e.quantity);
+                  double qtyLocalVendus =
+                      double.parse(e.quantity) - double.parse(element.quantity);
+                  double qtyDispCloud = double.parse(e.quantity) - qtyLocalVendus;
+                  double qtyAchatCloud = double.parse(e.quantityAchat) + double.parse(element.quantityAchat);
                   final dataItem = AchatModel(
+                    id: e.id,
                     idProduct: e.idProduct,
-                    quantity: qty.toString(),
-                    quantityAchat: e.quantityAchat,
-                    priceAchatUnit: e.priceAchatUnit,
-                    prixVenteUnit: e.prixVenteUnit,
-                    unite: e.unite,
-                    tva: e.tva,
-                    remise: e.remise,
-                    qtyRemise: e.qtyRemise,
-                    qtyLivre: e.qtyLivre,
-                    succursale: e.succursale,
-                    signature: e.signature,
-                    created: e.created,
-                    business: e.business,
-                    sync: e.sync,
-                    async: 'saved',
+                    quantity: qtyDispCloud.toString(),
+                    quantityAchat: qtyAchatCloud.toString(),
+                    priceAchatUnit: element.priceAchatUnit,
+                    prixVenteUnit: element.prixVenteUnit,
+                    unite: element.unite,
+                    tva: element.tva,
+                    remise: element.remise,
+                    qtyRemise: element.qtyRemise,
+                    qtyLivre: element.qtyLivre,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
                   );
-                  await stockStore.updateData(dataItem).then((value) {
-                    getList();
-                    if (kDebugMode) {
-                      print('Sync Down succursale ok');
-                    }
+                  print('Sync up e.id ${e.id}');
+                  print('Sync up e.id ${e.idProduct}');
+                  print('Sync up e.id ${qtyDispCloud}');
+                  print('Sync up e.id ${qtyAchatCloud}');
+                  print('Sync up e.id ${element.priceAchatUnit}');
+                  print('Sync up e.id ${element.prixVenteUnit}');
+                  print('Sync up e.id ${element.unite}');
+                  print('Sync up e.id ${element.tva}');
+                  print('Sync up e.id ${element.remise}');
+                  print('Sync up e.id ${element.qtyRemise}');
+                  print('Sync up e.id ${element.qtyLivre}');
+                  print('Sync up e.id ${element.succursale}');
+                  print('Sync up e.id ${element.signature}');
+                  print('Sync up e.id ${element.created}');
+                  print('Sync up e.id ${element.business}'); 
+                  print('Sync up e.id ${element.async}');
+                  await achatApi.updateData(dataItem).then((value) async {
+                    AchatModel achatModel = achatList
+                        .where((p0) => p0.idProduct == value.idProduct)
+                        .last;
+                    print('Sync ${achatModel.sync}');
+                    final dataItem = AchatModel(
+                      id: achatModel.id,
+                      idProduct: achatModel.idProduct,
+                      quantity: achatModel.quantity,
+                      quantityAchat: achatModel.quantityAchat,
+                      priceAchatUnit: achatModel.priceAchatUnit,
+                      prixVenteUnit: achatModel.prixVenteUnit,
+                      unite: achatModel.unite,
+                      tva: achatModel.tva,
+                      remise: achatModel.remise,
+                      qtyRemise: achatModel.qtyRemise,
+                      qtyLivre: achatModel.qtyLivre,
+                      succursale: achatModel.succursale,
+                      signature: achatModel.signature,
+                      created: achatModel.created,
+                      business: achatModel.business,
+                      sync: "sync",
+                      async: achatModel.async,
+                    );
+                    await stockStore.updateData(dataItem).then((value) {
+                      achatList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up stock ok');
+                      }
+                    });
                   });
-                }
+                }  
+                // else {
+                //   final dataItem = AchatModel(
+                //     idProduct: element.idProduct,
+                //     quantity: element.quantity,
+                //     quantityAchat: element.quantityAchat,
+                //     priceAchatUnit: element.priceAchatUnit,
+                //     prixVenteUnit: element.prixVenteUnit,
+                //     unite: element.unite,
+                //     tva: element.tva,
+                //     remise: element.remise,
+                //     qtyRemise: element.qtyRemise,
+                //     qtyLivre: element.qtyLivre,
+                //     succursale: element.succursale,
+                //     signature: element.signature,
+                //     created: element.created,
+                //     business: element.business,
+                //     sync: "sync",
+                //     async: element.async,
+                //   );
+                //   await achatApi.insertData(dataItem).then((value) async {
+                //     AchatModel achatModel = achatList
+                //         .where((p0) => p0.idProduct == value.idProduct)
+                //         .last;
+                //     final dataItem = AchatModel(
+                //       id: achatModel.id,
+                //       idProduct: achatModel.idProduct,
+                //       quantity: achatModel.quantity,
+                //       quantityAchat: achatModel.quantityAchat,
+                //       priceAchatUnit: achatModel.priceAchatUnit,
+                //       prixVenteUnit: achatModel.prixVenteUnit,
+                //       unite: achatModel.unite,
+                //       tva: achatModel.tva,
+                //       remise: achatModel.remise,
+                //       qtyRemise: achatModel.qtyRemise,
+                //       qtyLivre: achatModel.qtyLivre,
+                //       succursale: achatModel.succursale,
+                //       signature: achatModel.signature,
+                //       created: achatModel.created,
+                //       business: achatModel.business,
+                //       sync: "sync",
+                //       async: achatModel.async,
+                //     );
+                //     await stockStore.updateData(dataItem).then((value) {
+                //       achatList.clear();
+                //       getList();
+                //       if (kDebugMode) {
+                //         print('Sync up stock ok');
+                //       }
+                //     });
+                //   });
+                // }
               }
             }
-            
-          }
-        }).toList();
-      _isLoading.value = false;
+          }).toList();
+        }
+        
+        _isLoading.value = false;
+      }
     } catch (e) {
-     _isLoading.value = false;
+      _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",
-        backgroundColor: Colors.red,
-        icon: const Icon(Icons.check),
-        snackPosition: SnackPosition.TOP);
-    } 
-    
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
   }
 }

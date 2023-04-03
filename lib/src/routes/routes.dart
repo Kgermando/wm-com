@@ -65,14 +65,9 @@ class ComRoutes {
   static const comProduitModel = "/com-produit-model";
   static const comProduitModelDetail = "/com-produit-model-detail";
   static const comProduitModelAdd = "/com-produit-model-add";
-  static const comProduitModelUpdate = "/com-produit-model-update";
-  static const comStockGlobal = "/com-stock-global";
-  static const comStockGlobalDetail = "/com-stock-global-detail";
-  static const comStockGlobalAdd = "/com-stock-global-add";
-  static const comStockGlobalRavitaillement =
-      "/com-stock-global-ravitaillement";
-  static const comStockGlobalLivraisonStock =
-      "/com-stock-global-livraisonStock";
+  static const comProduitModelUpdate = "/com-produit-model-update"; 
+  static const comStockRavitaillement = "/com-stock-ravitaillement";
+  static const comStockLivraison = "/com-stock-livraison";
   static const comSuccursale = "/com-succursale";
   static const comSuccursaleDetail = "/com-succursale-detail";
   static const comSuccursaleAdd = "/com-succursale-add";

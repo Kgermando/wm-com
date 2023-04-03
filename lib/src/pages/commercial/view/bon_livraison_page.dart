@@ -10,6 +10,7 @@ import 'package:wm_com/src/pages/commercial/controller/bon_livraison/bon_livrais
 import 'package:wm_com/src/routes/routes.dart';
 import 'package:wm_com/src/widgets/barre_connection_widget.dart';
 import 'package:wm_com/src/widgets/loading.dart';
+import 'package:wm_com/src/widgets/title_widget.dart';
 
 class BonLivraisonPage extends StatefulWidget {
   const BonLivraisonPage({super.key});
@@ -42,11 +43,7 @@ class _BonLivraisonPageState extends State<BonLivraisonPage> {
               child: controller.obx(
                   onLoading: loadingPage(context),
                   onEmpty: const Text('Aucune donnée'),
-                  onError: (error) => loadingError(context, error!), (state) {
-                var bonLivraisonList = state!
-                    .where((element) =>
-                        element.succursale == controller.profilController.user.succursale)
-                    .toList();
+                  onError: (error) => loadingError(context, error!), (state) { 
                 return SingleChildScrollView(
                     controller: ScrollController(),
                     physics: const ScrollPhysics(),
@@ -58,8 +55,9 @@ class _BonLivraisonPageState extends State<BonLivraisonPage> {
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
+                                  const TitleWidget(title: 'Bon de livraison'),
                                   IconButton(
                                       onPressed: () {
                                         controller.getList();
@@ -70,9 +68,9 @@ class _BonLivraisonPageState extends State<BonLivraisonPage> {
                               ),
                               ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: bonLivraisonList.length,
+                                  itemCount: state!.length,
                                   itemBuilder: (context, index) {
-                                    final data = bonLivraisonList[index];
+                                    final data = state[index];
                                     return bonLivraisonItemWidget(data);
                                   }),
                             ],

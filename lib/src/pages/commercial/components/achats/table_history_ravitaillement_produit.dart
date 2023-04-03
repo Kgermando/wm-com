@@ -59,16 +59,14 @@ class _TableHistoryRavitaillementProduitState
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              TitleWidget(
-                  title: (Responsive.isDesktop(context))
-                      ? "Historique de Ravitaillements"
-                      : "Hist. de Ravitaillements"),
+              const TitleWidget(
+                  title: "Ravitaillements"),
               Row(
                 children: [
                   IconButton(
                       onPressed: () {
                         Navigator.pushNamed(
-                            context, ComRoutes.comStockGlobalDetail,
+                            context, ComRoutes.comAchatDetail,
                             arguments: widget.achatModel);
                       },
                       icon: Icon(Icons.refresh, color: Colors.green.shade700)),

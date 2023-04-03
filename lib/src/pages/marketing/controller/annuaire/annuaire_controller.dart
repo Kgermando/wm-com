@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wm_com/src/global/api/marketing/annuaire_api.dart';
 import 'package:wm_com/src/global/store/marketing/annuaire_store.dart';
 import 'package:wm_com/src/models/marketing/annuaire_model.dart';
 import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
@@ -9,6 +11,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 class AnnuaireController extends GetxController
     with StateMixin<List<AnnuaireModel>> {
   final AnnuaireStore annuaireStore = AnnuaireStore();
+  final AnnuaireApi annuaireApi = AnnuaireApi();
 
   final ProfilController profilController = Get.find();
 
@@ -232,6 +235,173 @@ class AnnuaireController extends GetxController
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de soumission", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+  }
+
+  void syncData() async {
+    try {
+      _isLoading.value = true;
+      var dataCloudList = await annuaireApi.getAllData();
+      var dataList = annuaireList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          annuaireList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = AnnuaireModel(
+              categorie: element.categorie,
+              nomPostnomPrenom: element.nomPostnomPrenom,
+              email: element.email,
+              mobile1: element.mobile1,
+              mobile2: element.mobile2,
+              secteurActivite: element.secteurActivite,
+              nomEntreprise: element.nomEntreprise,
+              grade: element.grade,
+              adresseEntreprise: element.adresseEntreprise,
+              succursale: element.succursale,
+              signature:element.signature,
+              created: element.created,
+              business: element.business,
+              updateCreated: element.updateCreated,
+              sync: "sync",
+              async: element.async,
+            );
+            await annuaireApi.insertData(dataItem).then((value) async {
+              AnnuaireModel dataModel = dataList
+                  .where((p0) =>
+                      p0.created.millisecondsSinceEpoch ==
+                      value.created.millisecondsSinceEpoch)
+                  .last;
+              final dataItem = AnnuaireModel(
+                id: dataModel.id,
+                categorie: dataModel.categorie,
+                nomPostnomPrenom: dataModel.nomPostnomPrenom,
+                email: dataModel.email,
+                mobile1: dataModel.mobile1,
+                mobile2: dataModel.mobile2,
+                secteurActivite: dataModel.secteurActivite,
+                nomEntreprise: dataModel.nomEntreprise,
+                grade: dataModel.grade,
+                adresseEntreprise: dataModel.adresseEntreprise,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                updateCreated: dataModel.updateCreated,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await annuaireStore.updateData(dataItem).then((value) {
+                annuaireList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up annuaireList ok');
+                }
+              });
+            });
+          }
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (annuaireList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = AnnuaireModel(
+              categorie: element.categorie,
+              nomPostnomPrenom: element.nomPostnomPrenom,
+              email: element.email,
+              mobile1: element.mobile1,
+              mobile2: element.mobile2,
+              secteurActivite: element.secteurActivite,
+              nomEntreprise: element.nomEntreprise,
+              grade: element.grade,
+              adresseEntreprise: element.adresseEntreprise,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              updateCreated: element.updateCreated,
+              sync: "sync",
+              async: element.async,
+            );
+            await annuaireStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download annuaireList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = AnnuaireModel(
+                    id: e.id,
+                    categorie: element.categorie,
+                    nomPostnomPrenom: element.nomPostnomPrenom,
+                    email: element.email,
+                    mobile1: element.mobile1,
+                    mobile2: element.mobile2,
+                    secteurActivite: element.secteurActivite,
+                    nomEntreprise: element.nomEntreprise,
+                    grade: element.grade,
+                    adresseEntreprise: element.adresseEntreprise,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    updateCreated: element.updateCreated,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await annuaireApi.updateData(dataItem).then((value) async {
+                    AnnuaireModel dataModel = dataList
+                        .where((p0) =>
+                            p0.created.millisecondsSinceEpoch ==
+                            value.created.millisecondsSinceEpoch)
+                        .last;
+                    final dataItem = AnnuaireModel(
+                      id: dataModel.id,
+                      categorie: dataModel.categorie,
+                      nomPostnomPrenom: dataModel.nomPostnomPrenom,
+                      email: dataModel.email,
+                      mobile1: dataModel.mobile1,
+                      mobile2: dataModel.mobile2,
+                      secteurActivite: dataModel.secteurActivite,
+                      nomEntreprise: dataModel.nomEntreprise,
+                      grade: dataModel.grade,
+                      adresseEntreprise: dataModel.adresseEntreprise,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      updateCreated: dataModel.updateCreated,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await annuaireStore.updateData(dataItem).then((value) {
+                      annuaireList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up annuaireList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
           backgroundColor: Colors.red,
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);

@@ -197,41 +197,164 @@ class ReservationController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
       var dataCloudList = await reservationApi.getAllData();
-      dataCloudList.map((e) async {
-        if (!reservationList.contains(e)) {
-          if (dataCloudList.isNotEmpty) {
+      var dataList = reservationList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          reservationList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
             final dataItem = ReservationModel(
-              client: e.client,
-              telephone: e.telephone,
-              email: e.email,
-              adresse: e.adresse,
-              nbrePersonne: e.nbrePersonne,
-              dureeEvent: e.dureeEvent,
-              createdDay: e.createdDay,
-              background: e.background,
-              eventName: e.eventName,
-              montant: e.montant,
-              succursale: e.succursale,
-              signature: e.signature,
-              created: e.created,
-              business: e.business,
-              sync: e.sync,
-              async: 'saved',
-            ); 
-            await reservationStore.insertData(dataItem).then((value) {
-              getList();
-              if (kDebugMode) {
-                print('Sync Down reservation ok');
-              }
+              client: element.client,
+              telephone: element.telephone,
+              email: element.email,
+              adresse: element.adresse,
+              nbrePersonne: element.nbrePersonne,
+              dureeEvent: element.dureeEvent,
+              createdDay: element.createdDay,
+              background: element.background,
+              eventName: element.eventName,
+              montant: element.montant,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await reservationApi.insertData(dataItem).then((value) async {
+              ReservationModel dataModel = dataList
+                  .where((p0) =>
+                      p0.created.millisecondsSinceEpoch ==
+                      value.created.millisecondsSinceEpoch)
+                  .last;
+              final dataItem = ReservationModel(
+                id: dataModel.id,
+                client: dataModel.client,
+                telephone: dataModel.telephone,
+                email: dataModel.email,
+                adresse: dataModel.adresse,
+                nbrePersonne: dataModel.nbrePersonne,
+                dureeEvent: dataModel.dureeEvent,
+                createdDay: dataModel.createdDay,
+                background: dataModel.background,
+                eventName: dataModel.eventName,
+                montant: dataModel.montant,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              ); 
+              await reservationStore.updateData(dataItem).then((value) {
+                reservationList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up reservationList ok');
+                }
+              });
             });
           }
         }
-      }).toList();
-      _isLoading.value = false;
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (reservationList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = ReservationModel(
+              client: element.client,
+              telephone: element.telephone,
+              email: element.email,
+              adresse: element.adresse,
+              nbrePersonne: element.nbrePersonne,
+              dureeEvent: element.dureeEvent,
+              createdDay: element.createdDay,
+              background: element.background,
+              eventName: element.eventName,
+              montant: element.montant,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await reservationStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download reservationList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = ReservationModel(
+                    id: e.id,
+                    client: element.client,
+                    telephone: element.telephone,
+                    email: element.email,
+                    adresse: element.adresse,
+                    nbrePersonne: element.nbrePersonne,
+                    dureeEvent: element.dureeEvent,
+                    createdDay: element.createdDay,
+                    background: element.background,
+                    eventName: element.eventName,
+                    montant: element.montant,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await reservationApi.updateData(dataItem).then((value) async {
+                    ReservationModel dataModel = dataList
+                        .where((p0) =>
+                            p0.created.millisecondsSinceEpoch ==
+                            value.created.millisecondsSinceEpoch)
+                        .last;
+                    final dataItem = ReservationModel(
+                      id: dataModel.id,
+                      client: dataModel.client,
+                      telephone: dataModel.telephone,
+                      email: dataModel.email,
+                      adresse: dataModel.adresse,
+                      nbrePersonne: dataModel.nbrePersonne,
+                      dureeEvent: dataModel.dureeEvent,
+                      createdDay: dataModel.createdDay,
+                      background: dataModel.background,
+                      eventName: dataModel.eventName,
+                      montant: dataModel.montant,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    ); 
+                    await reservationStore.updateData(dataItem).then((value) {
+                      reservationList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up reservationList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",

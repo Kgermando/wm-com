@@ -24,7 +24,7 @@ class _AjoutProdModelTerrasseState extends State<AjoutProdModelTerrasse> {
   final MonnaieStorage monnaieStorage = Get.put(MonnaieStorage());
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Terrasse";
-  String subTitle = "Nouveau Produit Modèle";
+  String subTitle = "Nouveau Menu";
 
   FocusNode focusNode = FocusNode();
 
@@ -65,7 +65,7 @@ class _AjoutProdModelTerrasseState extends State<AjoutProdModelTerrasse> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const TitleWidget(
-                                      title: 'Identifiant Produit'),
+                                      title: 'Nouveau Menu'),
                                   const SizedBox(
                                     height: p20,
                                   ),

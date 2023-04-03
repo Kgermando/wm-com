@@ -5,9 +5,9 @@ import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/models/commercial/achat_model.dart';
 import 'package:wm_com/src/routes/routes.dart';
 
-class ListStock extends StatelessWidget {
-  const ListStock({Key? key, required this.achat, required this.role})
-      : super(key: key);
+class ListStock extends StatelessWidget { 
+  const ListStock({super.key, 
+    required this.achat, required this.role});
   final AchatModel achat;
   final String role;
 

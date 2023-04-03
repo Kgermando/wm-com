@@ -169,41 +169,159 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
       var dataCloudList = await userApi.getAllData();
-      dataCloudList.map((e) async {
-        if (!usersList.contains(e)) {
-          if (dataCloudList.isNotEmpty) {
+      var dataList = usersList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          usersList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
             final dataItem = UserModel(
-              nom: e.nom,
-              prenom: e.prenom,
-              email: e.email,
-              telephone: e.telephone,
-              matricule: e.matricule,
-              departement: e.departement,
-              servicesAffectation: e.servicesAffectation,
-              fonctionOccupe: e.fonctionOccupe,
-              role: e.role,
-              isOnline: e.isOnline,
-              createdAt: e.createdAt,
-              passwordHash: e.passwordHash,
-              succursale: e.succursale,
-              business: e.business,
-              sync: e.sync,
-              async: 'saved',
-            ); 
-            await usersStore.insertData(dataItem).then((value) {
-              getList();
-              if (kDebugMode) {
-                print('Sync Down user ok');
-              }
+              nom: element.nom,
+              prenom: element.prenom,
+              email: element.email,
+              telephone: element.telephone,
+              matricule: element.matricule,
+              departement: element.departement,
+              servicesAffectation: element.servicesAffectation,
+              fonctionOccupe: element.fonctionOccupe,
+              role: element.role,
+              isOnline: element.isOnline,
+              createdAt: element.createdAt,
+              passwordHash: element.passwordHash,
+              succursale: element.succursale,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await userApi.insertData(dataItem).then((value) async {
+              UserModel dataModel = dataList
+                  .where((p0) => p0.matricule == value.matricule)
+                  .last;
+              final dataItem = UserModel(
+                id: dataModel.id,
+                nom: dataModel.nom,
+                prenom: dataModel.prenom,
+                email: dataModel.email,
+                telephone: dataModel.telephone,
+                matricule: dataModel.matricule,
+                departement: dataModel.departement,
+                servicesAffectation: dataModel.servicesAffectation,
+                fonctionOccupe: dataModel.fonctionOccupe,
+                role: dataModel.role,
+                isOnline: dataModel.isOnline,
+                createdAt: dataModel.createdAt,
+                passwordHash: dataModel.passwordHash,
+                succursale: dataModel.succursale,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await usersStore.updateData(dataItem).then((value) {
+                usersList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up usersList ok');
+                }
+              });
             });
           }
         }
-      }).toList();
-      _isLoading.value = false;
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (usersList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = UserModel(
+              nom: element.nom,
+              prenom: element.prenom,
+              email: element.email,
+              telephone: element.telephone,
+              matricule: element.matricule,
+              departement: element.departement,
+              servicesAffectation: element.servicesAffectation,
+              fonctionOccupe: element.fonctionOccupe,
+              role: element.role,
+              isOnline: element.isOnline,
+              createdAt: element.createdAt,
+              passwordHash: element.passwordHash,
+              succursale: element.succursale,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await usersStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download usersList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.matricule == element.matricule) {
+                  final dataItem = UserModel(
+                    id: e.id,
+                    nom: element.nom,
+                    prenom: element.prenom,
+                    email: element.email,
+                    telephone: element.telephone,
+                    matricule: element.matricule,
+                    departement: element.departement,
+                    servicesAffectation: element.servicesAffectation,
+                    fonctionOccupe: element.fonctionOccupe,
+                    role: element.role,
+                    isOnline: element.isOnline,
+                    createdAt: element.createdAt,
+                    passwordHash: element.passwordHash,
+                    succursale: element.succursale,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await userApi.updateData(dataItem).then((value) async {
+                     UserModel dataModel = dataList
+                        .where((p0) => p0.matricule == value.matricule)
+                        .last;
+                    final dataItem = UserModel(
+                      id: dataModel.id,
+                      nom: dataModel.nom,
+                      prenom: dataModel.prenom,
+                      email: dataModel.email,
+                      telephone: dataModel.telephone,
+                      matricule: dataModel.matricule,
+                      departement: dataModel.departement,
+                      servicesAffectation: dataModel.servicesAffectation,
+                      fonctionOccupe: dataModel.fonctionOccupe,
+                      role: dataModel.role,
+                      isOnline: dataModel.isOnline,
+                      createdAt: dataModel.createdAt,
+                      passwordHash: dataModel.passwordHash,
+                      succursale: dataModel.succursale,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await usersStore.updateData(dataItem).then((value) {
+                      usersList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up usersList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",

@@ -24,12 +24,6 @@ class FactureController extends GetxController
     getList();
   }
 
-  // @override
-  // void refresh() {
-  //   getList();
-  //   super.refresh();
-  // }
-
   void getList() async {
     await factureStore.getAllData().then((response) {
       factureList.clear();
@@ -68,35 +62,134 @@ class FactureController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
-        var dataCloudList = await factureApi.getAllData();
-      dataCloudList.map((e) async {
-        if (!factureList.contains(e)) {
-          if (dataCloudList.isNotEmpty) {
+      var dataCloudList = await factureApi.getAllData();
+      var dataList = factureList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          factureList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
             final dataItem = FactureCartModel(
-              cart: e.cart,
-              client: e.client,
-              nomClient: e.nomClient,
-              telephone: e.telephone,
-              succursale: e.succursale,
-              signature: e.signature,
-              created: e.created, 
-              business: e.business,
-              sync: e.sync,
-              async: 'saved',
-            ); 
-            await factureStore.insertData(dataItem).then((value) {
-              getList();
-              if (kDebugMode) {
-                print('Sync Down facture ok');
-              }
+              cart: element.cart,
+              client: element.client,
+              nomClient: element.nomClient,
+              telephone: element.telephone,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await factureApi.insertData(dataItem).then((value) async {
+              FactureCartModel dataModel = dataList
+                  .where((p0) =>
+                      p0.created.millisecondsSinceEpoch ==
+                      value.created.millisecondsSinceEpoch)
+                  .last;
+              final dataItem = FactureCartModel(
+                id: dataModel.id,
+                cart: dataModel.cart,
+                client: dataModel.client,
+                nomClient: dataModel.nomClient,
+                telephone: dataModel.telephone,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await factureStore.updateData(dataItem).then((value) {
+                factureList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up factureList ok');
+                }
+              });
             });
           }
         }
-      }).toList();
-      _isLoading.value = false;
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (factureList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = FactureCartModel(
+              cart: element.cart,
+              client: element.client,
+              nomClient: element.nomClient,
+              telephone: element.telephone,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await factureStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download factureList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = FactureCartModel(
+                    id: e.id,
+                    cart: element.cart,
+                    client: element.client,
+                    nomClient: element.nomClient,
+                    telephone: element.telephone,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await factureApi.updateData(dataItem).then((value) async {
+                    FactureCartModel dataModel = dataList
+                        .where((p0) =>
+                            p0.created.millisecondsSinceEpoch ==
+                            value.created.millisecondsSinceEpoch)
+                        .last;
+                    final dataItem = FactureCartModel(
+                      id: dataModel.id,
+                      cart: dataModel.cart,
+                      client: dataModel.client,
+                      nomClient: dataModel.nomClient,
+                      telephone: dataModel.telephone,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await factureStore.updateData(dataItem).then((value) {
+                      factureList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up factureList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",
@@ -104,6 +197,5 @@ class FactureController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
-    
   }
 }

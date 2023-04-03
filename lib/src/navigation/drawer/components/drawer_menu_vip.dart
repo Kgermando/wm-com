@@ -20,7 +20,7 @@ class DrawerMenuVip extends GetView<DepartementNotifyCOntroller> {
         child: profilController.obx(
             onLoading: loadingDrawer(),
             onError: (error) => loadingError(context, error!), (user) {
-      return ListView(
+      return Obx(() => ListView(
         shrinkWrap: true,
         children: [
           InkWell(
@@ -72,7 +72,7 @@ class DrawerMenuVip extends GetView<DepartementNotifyCOntroller> {
               selected: currentRoute == VipRoutes.prodModelVip,
               icon: Icons.production_quantity_limits,
               sizeIcon: 20.0,
-              title: 'Identifiant Produit',
+              title: 'Menus',
               style: bodyMedium,
               onTap: () {
                 Get.toNamed(VipRoutes.prodModelVip);
@@ -100,7 +100,7 @@ class DrawerMenuVip extends GetView<DepartementNotifyCOntroller> {
               currentRoute: currentRoute,
             )
         ],
-      );
+      )) ;
     }));
   }
 }

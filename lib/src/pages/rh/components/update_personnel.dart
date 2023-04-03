@@ -501,10 +501,15 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                   }
                 },
               );
-              controller.dateNaissanceController = dateTime;
+
+              setState(() {
+                controller.dateNaissanceController = dateTime;
+              });
             },
             icon: const Icon(Icons.calendar_month),
-            label: const Text("Date de Naissance")));
+            label: (controller.dateNaissanceController == null)
+                ? const Text("Date de naissance")
+                : Text("${controller.dateNaissanceController}")));
   }
 
   Widget lieuNaissanceWidget(PersonnelsController controller) {
@@ -628,7 +633,7 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
         ));
   }
 
-  Widget dateDebutContratWidget() {
+ Widget dateDebutContratWidget() {
     return Container(
         margin: const EdgeInsets.only(bottom: p20),
         child: TextButton.icon(
@@ -672,10 +677,14 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                   }
                 },
               );
-              controller.dateDebutContratController = dateTime;
+              setState(() {
+                controller.dateDebutContratController = dateTime;
+              });
             },
             icon: const Icon(Icons.calendar_month),
-            label: const Text("Date Debut Contrat")));
+            label: (controller.dateNaissanceController == null)
+                ? const Text("Date Debut Contrat")
+                : Text("${controller.dateNaissanceController}")));
   }
 
   Widget dateFinContratWidget() {
@@ -722,10 +731,14 @@ class _UpdatePersonnelState extends State<UpdatePersonnel> {
                   }
                 },
               );
-              controller.dateFinContratController = dateTime;
+              setState(() {
+                controller.dateFinContratController = dateTime;
+              });
             },
             icon: const Icon(Icons.calendar_month),
-            label: const Text("Date Fin Contrat")));
+            label: (controller.dateNaissanceController == null)
+                ? const Text("Date Fin Contrat")
+                : Text("${controller.dateNaissanceController}")));
   }
 
   Widget fonctionOccupeWidget(PersonnelsController controller) {

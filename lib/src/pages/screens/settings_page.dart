@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
+import 'package:wm_com/src/helpers/monnaire_storage.dart';
 import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
 import 'package:wm_com/src/navigation/header/header_bar.dart';
+import 'package:wm_com/src/routes/routes.dart';
 import 'package:wm_com/src/utils/dropdown.dart';
 import 'package:wm_com/src/utils/info_system.dart';
 import 'package:wm_com/src/utils/licence_wm.dart';
@@ -16,10 +19,8 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _SettingsPageState extends State<SettingsPage> {
-  // final CaisseNameController caisseNameController =
-  //     Get.put(CaisseNameController());
-  // final MonnaieStorage monnaieStorage = Get.put(MonnaieStorage());
+class _SettingsPageState extends State<SettingsPage> { 
+  final MonnaieStorage monnaieStorage = Get.put(MonnaieStorage());
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Settings";
   String subTitle = InfoSystem().version();
@@ -42,6 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final headlineSmall = Theme.of(context).textTheme.headlineSmall;
     return Scaffold(
       key: scaffoldKey,
       appBar: headerBar(context, scaffoldKey, title, subTitle),
@@ -94,27 +96,27 @@ class _SettingsPageState extends State<SettingsPage> {
                         const SizedBox(
                           height: 20.0,
                         ),
-                        // Card(
-                        //   child: Padding(
-                        //       padding: const EdgeInsets.all(8.0),
-                        //       child: ListSettings(
-                        //           icon: Icons.monetization_on,
-                        //           title: 'Devise',
-                        //           options: TextButton(
-                        //             onPressed: () {
-                        //               Get.toNamed(SettingsRoutes.monnaiePage);
-                        //             },
-                        //             child: Row(
-                        //               mainAxisAlignment:
-                        //                   MainAxisAlignment.center,
-                        //               children: [
-                        //                 Text(monnaieStorage.monney,
-                        //                     style: headlineSmall),
-                        //                 const Icon(Icons.arrow_right)
-                        //               ],
-                        //             ),
-                        //           ))),
-                        // ),
+                        Card(
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListSettings(
+                                  icon: Icons.monetization_on,
+                                  title: 'Devise',
+                                  options: TextButton(
+                                    onPressed: () {
+                                      Get.toNamed(SettingsRoutes.monnaiePage);
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(monnaieStorage.monney,
+                                            style: headlineSmall),
+                                        const Icon(Icons.arrow_right)
+                                      ],
+                                    ),
+                                  ))),
+                        ),
                         const SizedBox(
                           height: 20.0,
                         ),

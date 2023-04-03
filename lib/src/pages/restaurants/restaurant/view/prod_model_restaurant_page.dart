@@ -19,7 +19,7 @@ class ProdModelRestaurantPage extends StatefulWidget {
 class _ProdModelRestaurantPageState extends State<ProdModelRestaurantPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Restaurant";
-  String subTitle = "Produit Modèle";
+  String subTitle = "Menu";
 
   @override
   Widget build(BuildContext context) {
@@ -30,14 +30,14 @@ class _ProdModelRestaurantPageState extends State<ProdModelRestaurantPage> {
         drawer: const DrawerMenuRestaurant(),
         floatingActionButton: Responsive.isMobile(context)
             ? FloatingActionButton(
-                tooltip: "Nouveau produit modèle",
+                tooltip: "Nouveau Menu",
                 child: const Icon(Icons.add),
                 onPressed: () {
                   Get.toNamed(RestaurantRoutes.prodModelRestaurantAdd);
                 })
             : FloatingActionButton.extended(
-                label: const Text("Ajout produit modèle"),
-                tooltip: "Nouveau produit modèle",
+                label: const Text("Ajout Nouveau Menu"),
+                tooltip: "Nouveau Menu",
                 icon: const Icon(Icons.add),
                 onPressed: () {
                   Get.toNamed(RestaurantRoutes.prodModelRestaurantAdd);

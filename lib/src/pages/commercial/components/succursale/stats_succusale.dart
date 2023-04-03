@@ -13,6 +13,7 @@ import 'package:wm_com/src/pages/commercial/controller/succursale/succursale_con
 import 'package:wm_com/src/routes/routes.dart';
 import 'package:wm_com/src/widgets/dash_number_widget.dart';
 import 'package:wm_com/src/widgets/responsive_child_widget.dart';
+import 'package:wm_com/src/widgets/title_widget.dart';
 
 class StatsSuccursale extends StatefulWidget {
   const StatsSuccursale({super.key, required this.succursaleModel});
@@ -34,77 +35,70 @@ class _StatsSuccursaleState extends State<StatsSuccursale> {
       child: SingleChildScrollView(
         controller: ScrollController(),
         physics: const ScrollPhysics(),
-        child: Column(
-          children:[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GetBuilder(
-                  builder: (SuccursaleController controller) => Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // TitleWidget(title: title),
-                // const SizedBox(height: p10),
-                Wrap(
-                  alignment: WrapAlignment.spaceEvenly,
-                  children: [
-                    DashNumberWidget(
-                        gestureTapCallback: () {
-                          Get.toNamed(ComRoutes.comVente);
-                        },
-                        number:
-                            '${NumberFormat.decimalPattern('fr').format(controller.sumVente)} ${monnaieStorage.monney}',
-                        title: 'Ventes',
-                        icon: Icons.shopping_cart,
-                        color: Colors.purple.shade700),
-                    DashNumberWidget(
-                        gestureTapCallback: () {
-                          Get.toNamed(ComRoutes.comVente);
-                        },
-                        number:
-                            '${NumberFormat.decimalPattern('fr').format(controller.sumGain)} ${monnaieStorage.monney}',
-                        title: 'Gains',
-                        icon: Icons.grain,
-                        color: Colors.green.shade700),
-                    DashNumberWidget(
-                        gestureTapCallback: () {
-                          Get.toNamed(ComRoutes.comCreance);
-                        },
-                        number:
-                            '${NumberFormat.decimalPattern('fr').format(controller.sumDCreance)} ${monnaieStorage.monney}',
-                        title: 'Créances',
-                        icon: Icons.money_off_outlined,
-                        color: Colors.pink.shade700),
-                  ],
-                ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                ResponsiveChildWidget(
-                    child1: CourbeVenteGainDaySucc(
-                      controller: controller,
-                      monnaieStorage: monnaieStorage,
-                    ),
-                    child2: CourbeVenteGainMounthSucc(
-                      controller: controller,
-                      monnaieStorage: monnaieStorage,
-                    )),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                CourbeVenteGainYearSucc(
-                  controller: controller,
-                  monnaieStorage: monnaieStorage,
-                ),
-                const SizedBox(
-                  height: 20.0,
-                ),
-                ArticlePlusVendusSucc(
-                    state: controller.venteChartList,
-                    monnaieStorage: monnaieStorage)
-              ])),
-            ),
-           ],
-        ),
+        child: GetBuilder(
+            builder: (SuccursaleController controller) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TitleWidget(title: widget.succursaleModel.name),
+          const SizedBox(height: p10),
+          Wrap(
+            alignment: WrapAlignment.spaceEvenly,
+            children: [
+              DashNumberWidget(
+                  gestureTapCallback: () {
+                    Get.toNamed(ComRoutes.comVente);
+                  },
+                  number:
+                      '${NumberFormat.decimalPattern('fr').format(controller.sumVente)} ${monnaieStorage.monney}',
+                  title: 'Ventes',
+                  icon: Icons.shopping_cart,
+                  color: Colors.purple.shade700),
+              DashNumberWidget(
+                  gestureTapCallback: () {
+                    Get.toNamed(ComRoutes.comVente);
+                  },
+                  number:
+                      '${NumberFormat.decimalPattern('fr').format(controller.sumGain)} ${monnaieStorage.monney}',
+                  title: 'Gains',
+                  icon: Icons.grain,
+                  color: Colors.green.shade700),
+              DashNumberWidget(
+                  gestureTapCallback: () {
+                    Get.toNamed(ComRoutes.comCreance);
+                  },
+                  number:
+                      '${NumberFormat.decimalPattern('fr').format(controller.sumDCreance)} ${monnaieStorage.monney}',
+                  title: 'Créances',
+                  icon: Icons.money_off_outlined,
+                  color: Colors.pink.shade700),
+            ],
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          ResponsiveChildWidget(
+              child1: CourbeVenteGainDaySucc(
+                controller: controller,
+                monnaieStorage: monnaieStorage,
+              ),
+              child2: CourbeVenteGainMounthSucc(
+                controller: controller,
+                monnaieStorage: monnaieStorage,
+              )),
+          const SizedBox(
+            height: 20.0,
+          ),
+          CourbeVenteGainYearSucc(
+            controller: controller,
+            monnaieStorage: monnaieStorage,
+          ),
+          const SizedBox(
+            height: 20.0,
+          ),
+          ArticlePlusVendusSucc(
+              state: controller.venteChartList,
+              monnaieStorage: monnaieStorage)
+        ])),
       ),
     );
   }

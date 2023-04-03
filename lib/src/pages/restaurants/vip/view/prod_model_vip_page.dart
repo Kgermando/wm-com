@@ -18,7 +18,7 @@ class ProdModelVipPage extends StatefulWidget {
 class _ProdModelVipPageState extends State<ProdModelVipPage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Vip";
-  String subTitle = "Produit Modèle";
+  String subTitle = "Menu";
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +29,14 @@ class _ProdModelVipPageState extends State<ProdModelVipPage> {
         drawer: const DrawerMenuVip(),
         floatingActionButton: Responsive.isMobile(context)
             ? FloatingActionButton(
-                tooltip: "Nouveau produit modèle",
+                tooltip: "Nouveau Menu",
                 child: const Icon(Icons.add),
                 onPressed: () {
                   Get.toNamed(VipRoutes.prodModelVipAdd);
                 })
             : FloatingActionButton.extended(
-                label: const Text("Ajout produit modèle"),
-                tooltip: "Nouveau produit modèle",
+                label: const Text("Nouveau Menu"),
+                tooltip: "Nouveau Menu",
                 icon: const Icon(Icons.add),
                 onPressed: () {
                   Get.toNamed(VipRoutes.prodModelVipAdd);

@@ -67,7 +67,7 @@ class _TableProduitTerrasseModelState extends State<TableProduitTerrasseModel> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TitleWidget(title: "Produits ${widget.title}"),
+                  TitleWidget(title: "Menu ${widget.title}"),
                   Row(
                     children: [
                       IconButton(

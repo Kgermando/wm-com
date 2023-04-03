@@ -21,12 +21,6 @@ class VenteEffectueController extends GetxController
     super.onInit();
   }
 
-  // @override
-  // void refresh() {
-  //   getList();
-  //   super.refresh();
-  // }
-
   void getList() async {
     await venteEffectueStore.getAllData().then((response) {
       venteCartList.clear();
@@ -64,40 +58,145 @@ class VenteEffectueController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
-          var dataCloudList = await venteCartApi.getAllData();
-        dataCloudList.map((e) async {
-          if (!venteCartList.contains(e)) {
-            if (dataCloudList.isNotEmpty) {
-                final dataItem = VenteCartModel(
-                idProductCart: e.idProductCart,
-                quantityCart: e.quantityCart,
-                priceTotalCart: e.priceTotalCart,
-                unite: e.unite,
-                tva: e.tva,
-                remise: e.remise,
-                qtyRemise: e.qtyRemise,
-                succursale: e.succursale,
-                signature: e.signature,
-                created: e.created,
-                createdAt: e.createdAt,
-                business: e.business,
-                sync: e.sync,
-                async: 'saved',
-              );
-              await venteEffectueStore.insertData(dataItem).then((value) {
+      var dataCloudList = await venteCartApi.getAllData();
+      var dataList = venteCartList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          venteCartList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = VenteCartModel(
+              idProductCart: element.idProductCart,
+              quantityCart: element.quantityCart,
+              priceTotalCart: element.priceTotalCart,
+              unite: element.unite,
+              tva: element.tva,
+              remise: element.remise,
+              qtyRemise: element.qtyRemise,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              createdAt: element.createdAt,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await venteCartApi.insertData(dataItem).then((value) async {
+              VenteCartModel dataModel =
+                  dataList.where((p0) => p0.idProductCart == value.idProductCart).last;
+              final dataItem = VenteCartModel(
+                id: dataModel.id,
+                idProductCart: dataModel.idProductCart,
+                quantityCart: dataModel.quantityCart,
+                priceTotalCart: dataModel.priceTotalCart,
+                unite: dataModel.unite,
+                tva: dataModel.tva,
+                remise: dataModel.remise,
+                qtyRemise: dataModel.qtyRemise,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                createdAt: dataModel.createdAt,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              ); 
+              await venteEffectueStore.updateData(dataItem).then((value) {
+                venteCartList.clear();
                 getList();
                 if (kDebugMode) {
-                  print('Sync Down venteEffectue ok');
+                  print('Sync up venteCartList ok');
                 }
               });
-            }
-            
+            });
           }
-        }).toList();
-      _isLoading.value = false;
+        }
+      } else {
+        print('Sync up dataUpdateList $dataUpdateList');
+        if (venteCartList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = VenteCartModel( 
+              idProductCart: element.idProductCart,
+              quantityCart: element.quantityCart,
+              priceTotalCart: element.priceTotalCart,
+              unite: element.unite,
+              tva: element.tva,
+              remise: element.remise,
+              qtyRemise: element.qtyRemise,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              createdAt: element.createdAt,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await venteEffectueStore.insertData(dataItem).then((value) {
+              print("download venteCartList ok");
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.idProductCart == element.idProductCart) {
+                  final dataItem = VenteCartModel(
+                    id: e.id,
+                    idProductCart: e.idProductCart,
+                    quantityCart: element.quantityCart,
+                    priceTotalCart: element.priceTotalCart,
+                    unite: element.unite,
+                    tva: element.tva,
+                    remise: element.remise,
+                    qtyRemise: element.qtyRemise,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    createdAt: element.createdAt,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await venteCartApi.updateData(dataItem).then((value) async {
+                    VenteCartModel dataModel =
+                        venteCartList.where((p0) => p0.idProductCart == value.idProductCart).last;
+                    final dataItem = VenteCartModel(
+                      id: dataModel.id,
+                      idProductCart: dataModel.idProductCart,
+                      quantityCart: dataModel.quantityCart,
+                      priceTotalCart: dataModel.priceTotalCart,
+                      unite: dataModel.unite,
+                      tva: dataModel.tva,
+                      remise: dataModel.remise,
+                      qtyRemise: dataModel.qtyRemise,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      createdAt: dataModel.createdAt,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await venteEffectueStore.updateData(dataItem).then((value) {
+                      venteCartList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up venteCartList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",
@@ -105,6 +204,5 @@ class VenteEffectueController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
-    
   }
 }

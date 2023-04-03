@@ -106,37 +106,149 @@ class FactureCreanceController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
-            var dataCloudList = await creanceFactureApi.getAllData();
-        dataCloudList.map((e) async {
-          if (!creanceFactureList.contains(e)) {
-            if (dataCloudList.isNotEmpty) {
+      var dataCloudList = await creanceFactureApi.getAllData();
+      var dataList =
+          creanceFactureList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          creanceFactureList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = CreanceCartModel( 
+              cart: element.cart,
+              client: element.client,
+              nomClient: element.nomClient,
+              telephone: element.telephone,
+              addresse: element.addresse,
+              delaiPaiement: element.delaiPaiement,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await creanceFactureApi.insertData(dataItem).then((value) async {
+              CreanceCartModel dataModel = dataList
+                  .where((p0) =>
+                      p0.created.millisecondsSinceEpoch ==
+                      value.created.millisecondsSinceEpoch)
+                  .last;
               final dataItem = CreanceCartModel(
-                cart: e.cart,
-                client: e.client,
-                nomClient: e.nomClient,
-                telephone: e.telephone,
-                addresse: e.addresse,
-                delaiPaiement: e.delaiPaiement,
-                succursale: e.succursale,
-                signature: e.signature,
-                created: e.created, 
-                business: e.business,
-                sync: e.sync,
-                async: 'saved',
-              ); 
-              await factureCreanceStore.insertData(dataItem).then((value) {
+                id: dataModel.id,
+                cart: dataModel.cart,
+                client: dataModel.client,
+                nomClient: dataModel.nomClient,
+                telephone: dataModel.telephone,
+                addresse: dataModel.addresse,
+                delaiPaiement: dataModel.delaiPaiement,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await factureCreanceStore.updateData(dataItem).then((value) {
+                creanceFactureList.clear();
                 getList();
                 if (kDebugMode) {
-                  print('Sync Down creanceFacture ok');
+                  print('Sync up creanceFactureList ok');
                 }
               });
-            }
+            });
           }
-        }).toList();
-      _isLoading.value = false;
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (creanceFactureList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = CreanceCartModel( 
+              cart: element.cart,
+              client: element.client,
+              nomClient: element.nomClient,
+              telephone: element.telephone,
+              addresse: element.addresse,
+              delaiPaiement: element.delaiPaiement,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await factureCreanceStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download creanceFactureList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = CreanceCartModel(
+                    id: e.id,
+                    cart: element.cart,
+                    client: element.client,
+                    nomClient: element.nomClient,
+                    telephone: element.telephone,
+                    addresse: element.addresse,
+                    delaiPaiement: element.delaiPaiement,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await creanceFactureApi
+                      .updateData(dataItem)
+                      .then((value) async {
+                    CreanceCartModel dataModel = dataList
+                        .where((p0) =>
+                            p0.created.millisecondsSinceEpoch ==
+                            value.created.millisecondsSinceEpoch)
+                        .last;
+                    final dataItem = CreanceCartModel(
+                      id: dataModel.id,
+                      cart: dataModel.cart,
+                      client: dataModel.client,
+                      nomClient: dataModel.nomClient,
+                      telephone: dataModel.telephone,
+                      addresse: dataModel.addresse,
+                      delaiPaiement: dataModel.delaiPaiement,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await factureCreanceStore
+                        .updateData(dataItem)
+                        .then((value) {
+                      creanceFactureList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up creanceFactureList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",
@@ -144,6 +256,5 @@ class FactureCreanceController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
-    
   }
 }

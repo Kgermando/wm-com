@@ -148,7 +148,8 @@ class SuccursaleController extends GetxController
 
     // Gain
     var dataGain = gains
-        .where((element) => element.created.day == DateTime.now().day &&
+        .where((element) =>
+            element.created.day == DateTime.now().day &&
             element.succursale == profilController.user.succursale)
         .map((e) => e.sum)
         .toList();
@@ -265,8 +266,8 @@ class SuccursaleController extends GetxController
         signature: profilController.user.matricule,
         created: data.created,
         business: data.business,
-        sync: 'updated',
-        async: 'updated',
+        sync: 'update',
+        async: 'update',
       );
       await succursaleStore.updateData(dataItem).then((value) {
         clear();
@@ -288,33 +289,116 @@ class SuccursaleController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
       var dataCloudList = await succursaleApi.getAllData();
-      dataCloudList.map((e) async {
-        if (!succursaleList.contains(e)) {
-          if (dataCloudList.isNotEmpty) {
+      var dataList = succursaleList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          succursaleList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
             final dataItem = SuccursaleModel(
-              name: e.name,
-              adresse: e.adresse,
-              province: e.province,
-              signature: e.signature,
-              created: e.created,
-              business: e.business,
-              sync: e.sync,
-              async: 'saved',
+              name: element.name,
+              adresse: element.adresse,
+              province: element.province,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
             );
-            await succursaleStore.insertData(dataItem).then((value) {
-              getList();
-              if (kDebugMode) {
-                print('Sync Down succursale ok');
-              }
+            await succursaleApi.insertData(dataItem).then((value) async {
+              SuccursaleModel dataModel =
+                  dataList.where((p0) => p0.name == value.name).last;
+              final dataItem = SuccursaleModel(
+                id: dataModel.id,
+                name: dataModel.name,
+                adresse: dataModel.adresse,
+                province: dataModel.province,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await succursaleStore.updateData(dataItem).then((value) {
+                succursaleList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up stock ok');
+                }
+              });
             });
           }
         }
-      }).toList();
-      _isLoading.value = false;
+      } else {
+        print('Sync up dataUpdateList $dataUpdateList');
+        if (succursaleList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = SuccursaleModel(
+              name: element.name,
+              adresse: element.adresse,
+              province: element.province,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await succursaleStore.insertData(dataItem).then((value) {
+              print("download stock ok");
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                print('Sync up stock ${element.sync}');
+                if (e.name == element.name) { 
+                  final dataItem = SuccursaleModel(
+                    id: e.id,
+                    name: e.name,
+                    adresse: element.adresse,
+                    province: element.province,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await succursaleApi.updateData(dataItem).then((value) async {
+                   SuccursaleModel dataModel =
+                        succursaleList
+                        .where((p0) => p0.name == value.name).last; 
+                    final dataItem = SuccursaleModel(
+                      id: dataModel.id,
+                      name: dataModel.name,
+                      adresse: dataModel.adresse,
+                      province: dataModel.province,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await succursaleStore.updateData(dataItem).then((value) {
+                      succursaleList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up stock ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",

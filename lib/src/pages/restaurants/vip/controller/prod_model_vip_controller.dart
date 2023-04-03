@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/vip/prod_model_vip_api.dart';
 import 'package:wm_com/src/global/store/vip/prod_model_vip_store.dart';
 import 'package:wm_com/src/models/commercial/prod_model.dart';
 import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
@@ -8,6 +10,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 class ProdModelVipController extends GetxController
     with StateMixin<List<ProductModel>> {
   final ProdModelVipStore prodModelVipStore = ProdModelVipStore();
+  final ProduitModelVipApi produitModelVipApi = ProduitModelVipApi();
   final ProfilController profilController = Get.find();
 
   var produitModelList = <ProductModel>[].obs;
@@ -191,6 +194,142 @@ class ProdModelVipController extends GetxController
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de soumission", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+  }
+
+  void syncData() async {
+    try {
+      _isLoading.value = true;
+      var dataCloudList = await produitModelVipApi.getAllData();
+      var dataList = produitModelList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList = produitModelList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = ProductModel(
+              service: element.service,
+              identifiant: element.identifiant,
+              unite: element.unite,
+              price: element.price,
+              idProduct: element.idProduct,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await produitModelVipApi.insertData(dataItem).then((value) async {
+              ProductModel dataModel = dataList
+                  .where((p0) =>
+                      p0.created.millisecondsSinceEpoch ==
+                      value.created.millisecondsSinceEpoch)
+                  .last;
+              final dataItem = ProductModel(
+                id: dataModel.id,
+                service: dataModel.service,
+                identifiant: dataModel.identifiant,
+                unite: dataModel.unite,
+                price: dataModel.price,
+                idProduct: dataModel.idProduct,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await prodModelVipStore.updateData(dataItem).then((value) {
+                produitModelList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up produitModelList ok');
+                }
+              });
+            });
+          }
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (produitModelList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = ProductModel(
+              service: element.service,
+              identifiant: element.identifiant,
+              unite: element.unite,
+              price: element.price,
+              idProduct: element.idProduct,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await prodModelVipStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download produitModelList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = ProductModel(
+                    id: e.id,
+                    service: element.service,
+                    identifiant: element.identifiant,
+                    unite: element.unite,
+                    price: element.price,
+                    idProduct: element.idProduct,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await produitModelVipApi.updateData(dataItem).then((value) async {
+                    ProductModel dataModel = dataList
+                        .where((p0) =>
+                            p0.created.millisecondsSinceEpoch ==
+                            value.created.millisecondsSinceEpoch)
+                        .last;
+                    final dataItem = ProductModel(
+                      id: dataModel.id,
+                      service: dataModel.service,
+                      identifiant: dataModel.identifiant,
+                      unite: dataModel.unite,
+                      price: dataModel.price,
+                      idProduct: dataModel.idProduct,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await prodModelVipStore.updateData(dataItem).then((value) {
+                      produitModelList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up produitModelList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
           backgroundColor: Colors.red,
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);

@@ -12,8 +12,7 @@ class PaiementReservationController extends GetxController
     with StateMixin<List<PaiementReservationModel>> {
   PaiementReservationStore paiementReservationStore =
       PaiementReservationStore();
-  PaiementReservationApi paiementReservationApi =
-      PaiementReservationApi();
+  PaiementReservationApi paiementReservationApi = PaiementReservationApi();
   final ProfilController profilController = Get.find();
 
   var paiementReservationList = <PaiementReservationModel>[].obs;
@@ -148,35 +147,142 @@ class PaiementReservationController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
       var dataCloudList = await paiementReservationApi.getAllData();
-      dataCloudList.map((e) async {
-        if (!paiementReservationList.contains(e)) {
-          if (dataCloudList.isNotEmpty) {
-            final dataItem = PaiementReservationModel(
-              reference: e.reference,
-              client: e.client,
-              motif: e.motif,
-              montant: e.montant,
-              succursale: e.succursale,
-              signature: e.signature,
-              created: e.created,
-              business: e.business,
-              sync: e.sync,
-              async: 'saved',
-            );
-            await paiementReservationStore.insertData(dataItem).then((value) {
-              getList();
-              if (kDebugMode) {
-                print('Sync Down paiementReservation ok');
-              }
+      var dataList =
+          paiementReservationList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          paiementReservationList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = PaiementReservationModel( 
+              reference: element.reference,
+              client: element.client,
+              motif: element.motif,
+              montant: element.montant,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            ); 
+            await paiementReservationApi
+                .insertData(dataItem)
+                .then((value) async {
+              PaiementReservationModel dataModel = dataList
+                  .where((p0) =>
+                      p0.created.millisecondsSinceEpoch ==
+                      value.created.millisecondsSinceEpoch)
+                  .last;
+              final dataItem = PaiementReservationModel(
+                id: dataModel.id,
+                reference: dataModel.reference,
+                client: dataModel.client,
+                motif: dataModel.motif,
+                montant: dataModel.montant,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await paiementReservationStore.updateData(dataItem).then((value) {
+                paiementReservationList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up paiementReservationList ok');
+                }
+              });
             });
           }
         }
-      }).toList();
-      _isLoading.value = false;
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (paiementReservationList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = PaiementReservationModel(
+              id: element.id,
+              reference: element.reference,
+              client: element.client,
+              motif: element.motif,
+              montant: element.montant,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            ); 
+            await paiementReservationStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download paiementReservationList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = PaiementReservationModel(
+                    id: e.id,
+                    reference: element.reference,
+                    client: element.client,
+                    motif: element.motif,
+                    montant: element.montant,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await paiementReservationApi
+                      .updateData(dataItem)
+                      .then((value) async {
+                    PaiementReservationModel dataModel = dataList
+                        .where((p0) =>
+                            p0.created.millisecondsSinceEpoch ==
+                            value.created.millisecondsSinceEpoch)
+                        .last;
+                    final dataItem = PaiementReservationModel(
+                      id: dataModel.id,
+                      reference: dataModel.reference,
+                      client: dataModel.client,
+                      motif: dataModel.motif,
+                      montant: dataModel.montant,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await paiementReservationStore
+                        .updateData(dataItem)
+                        .then((value) {
+                      paiementReservationList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up paiementReservationList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",

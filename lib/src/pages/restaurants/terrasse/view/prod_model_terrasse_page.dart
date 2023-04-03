@@ -18,7 +18,7 @@ class ProdModelTerrassePage extends StatefulWidget {
 class _ProdModelTerrassePageState extends State<ProdModelTerrassePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Terrasse";
-  String subTitle = "Produit Modèle";
+  String subTitle = "Menu";
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +29,14 @@ class _ProdModelTerrassePageState extends State<ProdModelTerrassePage> {
         drawer: const DrawerMenuTerrasse(),
         floatingActionButton: Responsive.isMobile(context)
             ? FloatingActionButton(
-                tooltip: "Nouveau produit modèle",
+                tooltip: "Nouveau Menu",
                 child: const Icon(Icons.add),
                 onPressed: () {
                   Get.toNamed(TerrasseRoutes.prodModelTerrasseAdd);
                 })
             : FloatingActionButton.extended(
-                label: const Text("Ajout produit modèle"),
-                tooltip: "Nouveau produit modèle",
+                label: const Text("Ajout Nouveau Menu"),
+                tooltip: "Nouveau Menu",
                 icon: const Icon(Icons.add),
                 onPressed: () {
                   Get.toNamed(TerrasseRoutes.prodModelTerrasseAdd);

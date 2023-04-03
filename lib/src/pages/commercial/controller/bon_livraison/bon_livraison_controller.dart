@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-import 'package:wm_com/src/global/api/commerciale/achat_api.dart';
 import 'package:wm_com/src/global/api/commerciale/bon_livraison_api.dart';
 import 'package:wm_com/src/global/api/commerciale/livraison_history_api.dart';
+import 'package:wm_com/src/global/store/commercial/bon_livraison_store.dart';
+import 'package:wm_com/src/global/store/commercial/history_livraison_store.dart';
+import 'package:wm_com/src/global/store/commercial/stock_store.dart';
 import 'package:wm_com/src/models/commercial/achat_model.dart';
 import 'package:wm_com/src/models/commercial/bon_livraison.dart';
 import 'package:wm_com/src/models/commercial/livraiason_history_model.dart';
 import 'package:wm_com/src/pages/auth/controller/profil_controller.dart';
-import 'package:wm_com/src/pages/commercial/controller/history/history_livraison.dart';
 import 'package:wm_com/src/utils/info_system.dart';
 
 class BonLivraisonController extends GetxController
     with StateMixin<List<BonLivraisonModel>> {
   final BonLivraisonApi bonLivraisonApi = BonLivraisonApi();
-  final LivraisonHistoryApi livraisonHistoryApi =
-      LivraisonHistoryApi();
+  final LivraisonHistoryApi historyLivraisonApi = LivraisonHistoryApi();
   final ProfilController profilController = Get.find();
-  final AchatApi achatApi = AchatApi();
-  final HistoryLivraisonController historyLivraisonController =
-      Get.put(HistoryLivraisonController());
+  final StockStore stockStore = StockStore();
 
   List<BonLivraisonModel> bonLivraisonList = [];
   var achatList = <AchatModel>[].obs;
@@ -28,7 +26,7 @@ class BonLivraisonController extends GetxController
   final _isLoading = false.obs;
   bool get isLoading => _isLoading.value;
 
-   @override
+  @override
   void onInit() async {
     super.onInit();
     if (!GetPlatform.isWeb) {
@@ -43,10 +41,13 @@ class BonLivraisonController extends GetxController
   }
 
   void getList() async {
-    achatList.value = await achatApi.getAllData();
+    achatList.value = await stockStore.getAllData();
     await bonLivraisonApi.getAllData().then((response) {
       bonLivraisonList.clear();
-      bonLivraisonList.addAll(response);
+      bonLivraisonList.addAll(response
+          .where((element) =>
+              element.succursale == profilController.user.succursale)
+          .toList());
       change(bonLivraisonList, status: RxStatus.success());
     }, onError: (err) {
       change(null, status: RxStatus.error(err.toString()));
@@ -104,19 +105,22 @@ class BonLivraisonController extends GetxController
         accuseReceptionLastName: profilController.user.nom.toString(),
         succursale: data.succursale,
         signature: profilController.user.matricule,
-        created: DateTime.now(),
-        business: InfoSystem().business(),
+        created: data.created,
+        business: data.business,
         sync: "updated",
         async: "updated",
       );
+      print("bonLivraisonModel ${bonLivraisonModel.id} ");
       await bonLivraisonApi.updateData(bonLivraisonModel).then((value) async {
+        
         var achatDataList = achatList
             .where((p0) => p0.idProduct == value.idProduct)
             .toSet()
             .toList();
 
         if (achatDataList.isNotEmpty) {
-          var achatItem = achatDataList.first;
+          var achatItem = achatDataList.last;
+
           var achatQtyId = achatItem.id;
           var achatQty = achatItem.quantityAchat;
           var achatQtyRestante = achatItem.quantity;
@@ -159,7 +163,7 @@ class BonLivraisonController extends GetxController
             sync: "new",
             async: "new",
           );
-          await livraisonHistoryApi
+          await historyLivraisonApi
               .insertData(livraisonHistoryModel)
               .then((value) async {
             // Update AchatModel
@@ -178,12 +182,12 @@ class BonLivraisonController extends GetxController
               qtyLivre: data.quantityAchat,
               succursale: data.succursale,
               signature: profilController.user.matricule,
-              created: DateTime.now(),
+              created: data.created,
               business: data.business,
               sync: "updated",
               async: "updated",
             );
-            await achatApi.updateData(achatModel).then((value) {
+            await stockStore.updateData(achatModel).then((value) {
               bonLivraisonList.clear();
               getList();
               Get.back();
@@ -215,37 +219,37 @@ class BonLivraisonController extends GetxController
             sync: "new",
             async: "new",
           );
-          await achatApi.insertData(achatModel).then((value) async {
+          await stockStore.insertData(achatModel).then((value) async {
             // Add Livraison history si la succursale == la succursale de ravitaillement
-            var margeBenMap = (double.parse(value.prixVenteUnit) -
-                    double.parse(value.priceAchatUnit)) *
-                double.parse(value.quantity);
+            var margeBenMap = (double.parse(achatModel.prixVenteUnit) -
+                    double.parse(achatModel.priceAchatUnit)) *
+                double.parse(achatModel.quantity);
 
-            var margeBenRemise = (double.parse(value.remise) -
-                    double.parse(value.priceAchatUnit)) *
-                double.parse(value.quantity);
+            var margeBenRemise = (double.parse(achatModel.remise) -
+                    double.parse(achatModel.priceAchatUnit)) *
+                double.parse(achatModel.quantity);
             // Insert to Historique de Livraisons Stocks au comptant
             final livraisonHistoryModel = LivraisonHistoryModel(
               idProduct: data.idProduct,
-              quantityAchat: value.quantityAchat,
-              quantity: value.quantity,
-              priceAchatUnit: value.priceAchatUnit,
-              prixVenteUnit: value.prixVenteUnit,
+              quantityAchat: achatModel.quantityAchat,
+              quantity: achatModel.quantity,
+              priceAchatUnit: achatModel.priceAchatUnit,
+              prixVenteUnit: achatModel.prixVenteUnit,
               unite: data.unite,
               margeBen: margeBenMap.toString(),
-              tva: value.tva,
-              remise: value.remise,
-              qtyRemise: value.qtyRemise,
+              tva: achatModel.tva,
+              remise: achatModel.remise,
+              qtyRemise: achatModel.qtyRemise,
               margeBenRemise: margeBenRemise.toString(),
-              qtyLivre: value.quantityAchat,
-              succursale: value.succursale,
+              qtyLivre: achatModel.quantityAchat,
+              succursale: achatModel.succursale,
               signature: data.signature,
-              created: value.created,
-              business: value.business,
-              sync: "updated",
-              async: "updated",
+              created: achatModel.created,
+              business: achatModel.business,
+              sync: "new",
+              async: "new",
             );
-            await livraisonHistoryApi
+            await historyLivraisonApi
                 .insertData(livraisonHistoryModel)
                 .then((value) {
               bonLivraisonList.clear();

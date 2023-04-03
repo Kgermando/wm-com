@@ -8,7 +8,7 @@ import 'package:wm_com/src/pages/screens/binding/splash_binding.dart';
 import 'package:wm_com/src/routes/router.dart';
 import 'package:wm_com/src/routes/routes.dart';
 import 'package:wm_com/src/utils/info_system.dart';
- 
+
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();

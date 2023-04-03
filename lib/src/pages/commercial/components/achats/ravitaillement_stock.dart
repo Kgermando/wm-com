@@ -15,7 +15,8 @@ import 'package:wm_com/src/widgets/responsive_child_widget.dart';
 import 'package:wm_com/src/widgets/title_widget.dart';
 
 class RavitaillementStock extends StatefulWidget {
-  const RavitaillementStock({super.key, required this.achatModel});
+  const RavitaillementStock({super.key, 
+    required this.achatModel});
   final AchatModel achatModel;
 
   @override
@@ -62,14 +63,8 @@ class _RavitaillementStockState extends State<RavitaillementStock> {
               child: SingleChildScrollView(
                   controller: ScrollController(),
                   physics: const ScrollPhysics(),
-                  child: Container(
-                    margin: EdgeInsets.only(
-                        top: Responsive.isMobile(context) ? 0.0 : p20,
-                        bottom: p8,
-                        right: Responsive.isDesktop(context) ? p20 : 0,
-                        left: Responsive.isDesktop(context) ? p20 : 0),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(20))),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
                     child: Form(
                       key: controller.formKey,
                       child: Column(

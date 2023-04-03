@@ -6,16 +6,18 @@ import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/helpers/monnaire_storage.dart';
 import 'package:wm_com/src/models/commercial/achat_model.dart';
-import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
+import 'package:wm_com/src/navigation/drawer/components/drawer_menu_commercial.dart';
 import 'package:wm_com/src/navigation/header/header_bar.dart';
-import 'package:wm_com/src/pages/commercial/controller/achats/livraison_controller.dart'; 
+import 'package:wm_com/src/pages/commercial/controller/achats/livraison_com__controller.dart';
+import 'package:wm_com/src/pages/commercial/controller/succursale/succursale_controller.dart';
 import 'package:wm_com/src/utils/regex.dart';
 import 'package:wm_com/src/widgets/btn_widget.dart';
+import 'package:wm_com/src/widgets/loading.dart';
 import 'package:wm_com/src/widgets/responsive_child_widget.dart';
 import 'package:wm_com/src/widgets/title_widget.dart';
 
 class LivraisonStock extends StatefulWidget {
-   const LivraisonStock({super.key, required this.achatModel});
+  const LivraisonStock({super.key, required this.achatModel});
   final AchatModel achatModel;
 
   @override
@@ -24,32 +26,33 @@ class LivraisonStock extends StatefulWidget {
 
 class _LivraisonStockState extends State<LivraisonStock> {
   final MonnaieStorage monnaieStorage = Get.put(MonnaieStorage());
-  final LivraisonController controller = Get.find();
+  final LivraisonComController controller = Get.find();
+  final SuccursaleController succursaleController = Get.find();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey();
   String title = "Commercial";
 
-  @override
-  void initState() {
-    setState(() {
-      controller.controllerPrixVenteUnit =
-          TextEditingController(text: widget.achatModel.prixVenteUnit);
-    });
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   setState(() {
+  //     controller.controllerPrixVenteUnit =
+  //         TextEditingController(text: widget.achatModel.prixVenteUnit);
+  //   });
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      appBar: headerBar(
-          context, scaffoldKey, title, widget.achatModel.idProduct),
-      drawer: const DrawerMenu(),
+      appBar:
+          headerBar(context, scaffoldKey, title, widget.achatModel.idProduct),
+      drawer: const DrawerMenuCommercial(),
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Visibility(
               visible: !Responsive.isMobile(context),
-              child: const Expanded(flex: 1, child: DrawerMenu())),
+              child: const Expanded(flex: 1, child: DrawerMenuCommercial())),
           Expanded(
               flex: 5,
               child: SingleChildScrollView(
@@ -83,12 +86,13 @@ class _LivraisonStockState extends State<LivraisonStock> {
                                   const SizedBox(
                                     height: p20,
                                   ),
-                                  succursaleField(controller),
-                                  quantityField(controller),
-                                  prixVenteField(controller),
+                                  succursaleField(),
                                   ResponsiveChildWidget(
-                                      child1: qtyRemiseField(controller),
-                                      child2: remiseField(controller)),
+                                      child1: quantityField(),
+                                      child2: prixVenteField()),
+                                  ResponsiveChildWidget(
+                                      child1: qtyRemiseField(),
+                                      child2: remiseField()),
                                   const SizedBox(
                                     height: p20,
                                   ),
@@ -99,8 +103,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
                                         final form =
                                             controller.formKey.currentState!;
                                         if (form.validate()) {
-                                          controller
-                                              .submit(widget.achatModel);
+                                          controller.submit(widget.achatModel);
                                           form.reset();
                                         }
                                       }))
@@ -117,36 +120,43 @@ class _LivraisonStockState extends State<LivraisonStock> {
     );
   }
 
-  Widget succursaleField(LivraisonController controller) {
-    var succ = controller.succursaleList.map((e) => e.name).toList().toSet();
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20.0),
-      child: DropdownButtonFormField<String>(
-        decoration: InputDecoration(
-          labelText: 'Selectionner la succursale',
-          labelStyle: const TextStyle(),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
-          contentPadding: const EdgeInsets.only(left: 5.0),
+  Widget succursaleField() { 
+    return succursaleController.obx(
+      onLoading: loadingPage(context),
+      onEmpty: const Text('Aucune donnée'),
+      onError: (error) => loadingError(context, error!), 
+      (state) {
+        var succ = state!.map((e) => e.name).toSet().toList();
+        return Container(
+          margin: const EdgeInsets.only(bottom: 20.0),
+          child: DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+            labelText: 'Selectionner la succursale',
+            labelStyle: const TextStyle(),
+            border:
+                OutlineInputBorder(borderRadius: BorderRadius.circular(5.0)),
+            contentPadding: const EdgeInsets.only(left: 5.0),
+          ),
+          value: controller.succursale,
+          isExpanded: true,
+          items: succ.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          validator: (value) => value == null ? "Select succursalee" : null,
+          onChanged: (value) {
+            setState(() {
+              controller.succursale = value;
+            });
+          },
         ),
-        value: controller.succursale,
-        isExpanded: true,
-        items: succ.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
-        validator: (value) => value == null ? "Select succursalee" : null,
-        onChanged: (value) {
-          setState(() {
-            controller.succursale = value;
-          });
-        },
-      ),
-    );
+      );
+    });
   }
 
-  Widget quantityField(LivraisonController controller) {
+  Widget quantityField() {
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       child: Row(
@@ -154,7 +164,8 @@ class _LivraisonStockState extends State<LivraisonStock> {
           Expanded(
             flex: 3,
             child: TextFormField(
-              // controller: controllerQuantity, // Ce champ doit etre vide pour permettre a l'admin de saisir la qty
+              // controller: controller
+              //     .quantityController, // Ce champ doit etre vide pour permettre a l'admin de saisir la qty
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               inputFormatters: [
@@ -201,7 +212,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
     );
   }
 
-  Widget prixVenteField(LivraisonController controller) {
+  Widget prixVenteField() {
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       child: Row(
@@ -256,7 +267,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
     );
   }
 
-  Widget remiseField(LivraisonController controller) {
+  Widget remiseField() {
     return ResponsiveChildWidget(
         flex1: 3,
         flex2: 1,
@@ -288,10 +299,10 @@ class _LivraisonStockState extends State<LivraisonStock> {
             }),
           ),
         ),
-        child2: remiseValeur(controller));
+        child2: remiseValeur());
   }
 
-  Widget qtyRemiseField(LivraisonController controller) {
+  Widget qtyRemiseField() {
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       child: TextFormField(
@@ -323,7 +334,7 @@ class _LivraisonStockState extends State<LivraisonStock> {
 
   double? pavTVARemise;
 
-  remiseValeur(LivraisonController controller) {
+  remiseValeur() {
     var remiseEnPourcent = (controller.prixVenteUnit * controller.remise) / 100;
     pavTVARemise = controller.prixVenteUnit - remiseEnPourcent;
     return Container(

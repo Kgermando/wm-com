@@ -58,9 +58,8 @@ class _DashboardReservationPageState extends State<DashboardReservationPage> {
                                             ReservationRoutes.reservation);
                                       },
                                       number:
-                                          "${NumberFormat.decimalPattern('fr').format(controller.montantPayE)} \$",
-                                      // '${NumberFormat.decimalPattern('fr').format(controller.sumVente)} ${monnaieStorage.monney}',
-                                      title: 'Total payés',
+                                          "${NumberFormat.decimalPattern('fr').format(controller.montantPayE)} ${monnaieStorage.monney}", 
+                                      title: 'Total payé',
                                       icon: Icons.shopping_cart,
                                       color: Colors.green.shade700),
                                   DashNumberWidget(
@@ -69,9 +68,8 @@ class _DashboardReservationPageState extends State<DashboardReservationPage> {
                                             ReservationRoutes.reservation);
                                       },
                                       number:
-                                          "${NumberFormat.decimalPattern('fr').format(controller.montantNonPayE)} \$",
-                                      // '${NumberFormat.decimalPattern('fr').format(controller.sumGain)} ${monnaieStorage.monney}',
-                                      title: 'Total à payés',
+                                          "${NumberFormat.decimalPattern('fr').format(controller.montantNonPayE)} ${monnaieStorage.monney}", 
+                                      title: 'Total reste',
                                       icon: Icons.grain,
                                       color: Colors.purple.shade700),
                                 ],

@@ -66,7 +66,7 @@ class _TableProduitVipModelState extends State<TableProduitVipModel> {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TitleWidget(title: "Produits ${widget.title}"),
+                  TitleWidget(title: "Menu ${widget.title}"),
                   Row(
                     children: [
                       IconButton(

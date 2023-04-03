@@ -32,34 +32,6 @@ class _DashboardRHState extends State<DashboardRH> {
 
   @override
   Widget build(BuildContext context) {
-    // var isMonth = '';
-    // final month = DateTime.now().month;
-
-    // if (month == 1) {
-    //   isMonth = 'Janvier';
-    // } else if (month == 2) {
-    //   isMonth = 'Fevrier';
-    // } else if (month == 3) {
-    //   isMonth = 'Mars';
-    // } else if (month == 4) {
-    //   isMonth = 'Avril';
-    // } else if (month == 5) {
-    //   isMonth = 'Mai';
-    // } else if (month == 6) {
-    //   isMonth = 'Juin';
-    // } else if (month == 7) {
-    //   isMonth = 'Juillet';
-    // } else if (month == 8) {
-    //   isMonth = 'Août';
-    // } else if (month == 9) {
-    //   isMonth = 'Septembre';
-    // } else if (month == 10) {
-    //   isMonth = 'Octobre';
-    // } else if (month == 11) {
-    //   isMonth = 'Novembre';
-    // } else if (month == 12) {
-    //   isMonth = 'Décembre';
-    // }
     return Scaffold(
         key: scaffoldKey,
         appBar: headerBar(context, scaffoldKey, title, subTitle),
@@ -75,7 +47,7 @@ class _DashboardRHState extends State<DashboardRH> {
                 child: SingleChildScrollView(
                   controller: ScrollController(),
                   physics: const ScrollPhysics(),
-                  child: Column(
+                  child: Obx(() => Column(
                     children: [
                       const BarreConnectionWidget(),
                       Padding(
@@ -85,49 +57,50 @@ class _DashboardRHState extends State<DashboardRH> {
                             children: [
                               TitleWidget(title: title),
                               const SizedBox(height: p10),
-                              Wrap(
+                               Wrap(
                                 alignment: WrapAlignment.spaceEvenly,
                                 children: [
-                                  Obx(() => DashNumberRHWidget(
+                                  
+                                  DashNumberRHWidget(
                                       gestureTapCallback: () {
                                         Get.toNamed(RhRoutes.rhPersonnelsPage);
                                       },
                                       number: '${controller.agentsCount}',
                                       title: 'Total agents',
                                       icon: Icons.group,
-                                      color: Colors.blue.shade700)),
-                                  Obx(() => DashNumberRHWidget(
+                                      color: Colors.blue.shade700),
+                                  DashNumberRHWidget(
                                       gestureTapCallback: () {
                                         Get.toNamed(RhRoutes.rhUserActif);
                                       },
                                       number: '${controller.agentActifCount}',
                                       title: 'Agents Actifs',
                                       icon: Icons.person,
-                                      color: Colors.green.shade700)),
-                                  Obx(() => DashNumberRHWidget(
+                                      color: Colors.green.shade700),
+                                  DashNumberRHWidget(
                                       gestureTapCallback: () {
                                         Get.toNamed(RhRoutes.rhPersonnelsPage);
                                       },
                                       number: '${controller.agentInactifCount}',
                                       title: 'Agents inactifs',
                                       icon: Icons.person_off,
-                                      color: Colors.red.shade700)),
-                                  Obx(() => DashNumberRHWidget(
+                                      color: Colors.red.shade700),
+                                  DashNumberRHWidget(
                                       gestureTapCallback: () {
                                         Get.toNamed(RhRoutes.rhPersonnelsPage);
                                       },
                                       number: '${controller.agentFemmeCount}',
                                       title: 'Femmes',
                                       icon: Icons.female,
-                                      color: Colors.purple.shade700)),
-                                  Obx(() => DashNumberRHWidget(
+                                      color: Colors.purple.shade700),
+                                  DashNumberRHWidget(
                                       gestureTapCallback: () {
                                         Get.toNamed(RhRoutes.rhPersonnelsPage);
                                       },
                                       number: '${controller.agentHommeCount}',
                                       title: 'Hommes',
                                       icon: Icons.male,
-                                      color: Colors.grey.shade700)),
+                                      color: Colors.grey.shade700),
                                 ],
                               ),
                               const SizedBox(height: p20),
@@ -138,7 +111,7 @@ class _DashboardRHState extends State<DashboardRH> {
                             ]),
                       ),
                     ],
-                  ),
+                  ),) 
                 ))
           ],
         ));

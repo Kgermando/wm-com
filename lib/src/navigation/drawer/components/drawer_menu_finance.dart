@@ -20,7 +20,7 @@ class DrawerMenuFinance extends GetView<CaisseNameController> {
         child: controller.obx(
             onLoading: loadingDrawer(),
             onError: (error) => loadingError(context, error!), (state) {
-      return ListView(
+      return Obx(() => ListView(
         shrinkWrap: true,
         children: [
           InkWell(
@@ -78,7 +78,7 @@ class DrawerMenuFinance extends GetView<CaisseNameController> {
               currentRoute: currentRoute,
             )
         ],
-      );
+      )) ;
     }));
   }
 

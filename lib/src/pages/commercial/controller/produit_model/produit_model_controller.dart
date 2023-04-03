@@ -99,9 +99,8 @@ class ProduitModelController extends GetxController
   void submit() async {
     try {
       _isLoading.value = true;
-      String price = (priceController.text == '0') ? '' : priceController.text;
       final idProductform =
-          "${identifiantController.text.trim()}-${uniteController.text.trim()} $price";
+          "${identifiantController.text.trim()}-${uniteController.text.trim()}";
       final dataItem = ProductModel(
           service: 'commercial',
           identifiant: (identifiantController.text == "")
@@ -183,35 +182,131 @@ class ProduitModelController extends GetxController
     }
   }
 
-  void syncDataDown() async {
+  void syncData() async {
     try {
       _isLoading.value = true;
-    var dataCloudList = await produitModelApi.getAllData();
-        dataCloudList.map((e) async {
-          if (!produitModelList.contains(e)) {
-            if (dataCloudList.isNotEmpty) {
+      var dataCloudList = await produitModelApi.getAllData();
+      var dataList = produitModelList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          produitModelList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = ProductModel(
+              service: element.service,
+              identifiant: element.identifiant,
+              unite: element.unite,
+              price: element.price,
+              idProduct: element.idProduct,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await produitModelApi.insertData(dataItem).then((value) async {
+              ProductModel dataModel = dataList
+                  .where((p0) => p0.idProduct == value.idProduct)
+                  .last;
               final dataItem = ProductModel(
-                service: e.service,
-                identifiant: e.identifiant,
-                unite: e.unite,
-                price: e.price,
-                idProduct: e.idProduct,
-                signature: e.signature,
-                created: e.created, 
-                business: e.business,
-                sync: e.sync,
-                async: 'saved',
+                id: dataModel.id,
+                service: dataModel.service,
+                identifiant: dataModel.identifiant,
+                unite: dataModel.unite,
+                price: dataModel.price,
+                idProduct: dataModel.idProduct,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
               ); 
-              await produitModelStore.insertData(dataItem).then((value) {
+              await produitModelStore.updateData(dataItem).then((value) {
+                produitModelList.clear();
                 getList();
                 if (kDebugMode) {
-                  print('Sync Down venteEffectue ok');
+                  print('Sync up produitModelList ok');
                 }
               });
-            }
+            });
           }
-        }).toList();
-      _isLoading.value = false;
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (produitModelList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = ProductModel(
+              service: element.service,
+              identifiant: element.identifiant,
+              unite: element.unite,
+              price: element.price,
+              idProduct: element.idProduct,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await produitModelStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download produitModelList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.idProduct == element.idProduct) {
+                  final dataItem = ProductModel(
+                    id: e.id,
+                    service: element.service,
+                    identifiant: element.identifiant,
+                    unite: element.unite,
+                    price: element.price,
+                    idProduct: element.idProduct,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  ); 
+                  await produitModelApi
+                      .updateData(dataItem)
+                      .then((value) async {
+                    ProductModel dataModel = dataList
+                        .where((p0) => p0.idProduct == value.idProduct)
+                        .last;
+                    final dataItem = ProductModel(
+                      id: dataModel.id,
+                      service: dataModel.service,
+                      identifiant: dataModel.identifiant,
+                      unite: dataModel.unite,
+                      price: dataModel.price,
+                      idProduct: dataModel.idProduct,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await produitModelStore.updateData(dataItem).then((value) {
+                      produitModelList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up produitModelList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de la synchronisation", "$e",
@@ -219,6 +314,5 @@ class ProduitModelController extends GetxController
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);
     }
-    
   }
 }

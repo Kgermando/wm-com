@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/livraison/creance_livraison_api.dart';
 import 'package:wm_com/src/global/store/livraison/creance_livraison_store.dart';
 import 'package:wm_com/src/global/store/livraison/facture_livraison_store.dart';
 import 'package:wm_com/src/models/restaurant/creance_restaurant_model.dart';
@@ -10,6 +12,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 class CreanceLivraisonController extends GetxController
     with StateMixin<List<CreanceRestaurantModel>> {
   final CreanceLivraisonStore creancelivraisonStore = CreanceLivraisonStore();
+  final CreanceLivraisonApi creancelivraisonApi = CreanceLivraisonApi();
   final FactureLivraisonStore factureRestaurantStore = FactureLivraisonStore();
   final ProfilController profilController = Get.find();
 
@@ -91,6 +94,158 @@ class CreanceLivraisonController extends GetxController
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de soumission", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+  }
+
+  void syncData() async {
+    try {
+      _isLoading.value = true;
+      var dataCloudList = await creancelivraisonApi.getAllData();
+      var dataList =
+          creanceFactureList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          creanceFactureList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = CreanceRestaurantModel(
+              cart: element.cart,
+              client: element.client,
+              nomClient: element.nomClient,
+              telephone: element.telephone,
+              addresse: element.addresse,
+              delaiPaiement: element.delaiPaiement,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await creancelivraisonApi.insertData(dataItem).then((value) async {
+              CreanceRestaurantModel dataModel = dataList
+                  .where((p0) =>
+                      p0.created.millisecondsSinceEpoch ==
+                      value.created.millisecondsSinceEpoch)
+                  .last;
+              final dataItem = CreanceRestaurantModel(
+                id: dataModel.id,
+                cart: dataModel.cart,
+                client: dataModel.client,
+                nomClient: dataModel.nomClient,
+                telephone: dataModel.telephone,
+                addresse: dataModel.addresse,
+                delaiPaiement: dataModel.delaiPaiement,
+                succursale: dataModel.succursale,
+                signature: dataModel.signature,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await creancelivraisonStore.updateData(dataItem).then((value) {
+                creanceFactureList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up creanceFactureList ok');
+                }
+              });
+            });
+          }
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (creanceFactureList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = CreanceRestaurantModel(
+              cart: element.cart,
+              client: element.client,
+              nomClient: element.nomClient,
+              telephone: element.telephone,
+              addresse: element.addresse,
+              delaiPaiement: element.delaiPaiement,
+              succursale: element.succursale,
+              signature: element.signature,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await creancelivraisonStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download creanceFactureList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = CreanceRestaurantModel(
+                    id: e.id,
+                    cart: element.cart,
+                    client: element.client,
+                    nomClient: element.nomClient,
+                    telephone: element.telephone,
+                    addresse: element.addresse,
+                    delaiPaiement: element.delaiPaiement,
+                    succursale: element.succursale,
+                    signature: element.signature,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await creancelivraisonApi
+                      .updateData(dataItem)
+                      .then((value) async {
+                    CreanceRestaurantModel dataModel = dataList
+                        .where((p0) =>
+                            p0.created.millisecondsSinceEpoch ==
+                            value.created.millisecondsSinceEpoch)
+                        .last;
+                    final dataItem = CreanceRestaurantModel(
+                      id: dataModel.id,
+                      cart: dataModel.cart,
+                      client: dataModel.client,
+                      nomClient: dataModel.nomClient,
+                      telephone: dataModel.telephone,
+                      addresse: dataModel.addresse,
+                      delaiPaiement: dataModel.delaiPaiement,
+                      succursale: dataModel.succursale,
+                      signature: dataModel.signature,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await creancelivraisonStore
+                        .updateData(dataItem)
+                        .then((value) {
+                      creanceFactureList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up creanceFactureList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
           backgroundColor: Colors.red,
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);

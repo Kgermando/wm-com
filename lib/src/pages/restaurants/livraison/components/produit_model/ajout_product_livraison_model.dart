@@ -66,7 +66,7 @@ class _AjoutProdModelLivraisonState extends State<AjoutProdModelLivraison> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const TitleWidget(
-                                      title: 'Identifiant Produit'),
+                                      title: 'Nouveau Menu'),
                                   const SizedBox(
                                     height: p20,
                                   ),

@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wm_com/src/global/api/finance/caisse_name_api.dart';
 import 'package:wm_com/src/global/store/finance/caisse_name_store.dart';
 
 import 'package:wm_com/src/models/finance/caisse_name_model.dart';
@@ -9,6 +11,7 @@ import 'package:wm_com/src/utils/info_system.dart';
 class CaisseNameController extends GetxController
     with StateMixin<List<CaisseNameModel>> {
   final CaisseNameStore caisseNameStore = CaisseNameStore();
+  final CaisseNameApi caisseNameApi = CaisseNameApi();
   final ProfilController profilController = Get.find();
 
   var caisseNameList = <CaisseNameModel>[].obs;
@@ -149,6 +152,129 @@ class CaisseNameController extends GetxController
     } catch (e) {
       _isLoading.value = false;
       Get.snackbar("Erreur de soumission", "$e",
+          backgroundColor: Colors.red,
+          icon: const Icon(Icons.check),
+          snackPosition: SnackPosition.TOP);
+    }
+  }
+
+  void syncData() async {
+    try {
+      _isLoading.value = true;
+      var dataCloudList = await caisseNameApi.getAllData();
+      var dataList = caisseNameList.where((p0) => p0.sync == "new").toList();
+      var dataUpdateList =
+          caisseNameList.where((p0) => p0.sync == "update").toList();
+      if (dataCloudList.isEmpty) {
+        if (dataList.isNotEmpty) {
+          for (var element in dataList) {
+            final dataItem = CaisseNameModel(
+              nomComplet: element.nomComplet,
+              rccm: element.rccm,
+              idNat: element.idNat,
+              addresse: element.addresse,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await caisseNameApi.insertData(dataItem).then((value) async {
+              CaisseNameModel dataModel = dataList
+                  .where((p0) => p0.nomComplet == value.nomComplet)
+                  .last;
+              final dataItem = CaisseNameModel(
+                id: dataModel.id,
+                nomComplet: dataModel.nomComplet,
+                rccm: dataModel.rccm,
+                idNat: dataModel.idNat,
+                addresse: dataModel.addresse,
+                created: dataModel.created,
+                business: dataModel.business,
+                sync: "sync",
+                async: dataModel.async,
+              );
+              await caisseNameStore.updateData(dataItem).then((value) {
+                caisseNameList.clear();
+                getList();
+                if (kDebugMode) {
+                  print('Sync up caisseNameList ok');
+                }
+              });
+            });
+          }
+        }
+      } else {
+        // print('Sync up dataUpdateList $dataUpdateList');
+        if (caisseNameList.isEmpty) {
+          for (var element in dataCloudList) {
+            final dataItem = CaisseNameModel(
+              nomComplet: element.nomComplet,
+              rccm: element.rccm,
+              idNat: element.idNat,
+              addresse: element.addresse,
+              created: element.created,
+              business: element.business,
+              sync: "sync",
+              async: element.async,
+            );
+            await caisseNameStore.insertData(dataItem).then((value) {
+              if (kDebugMode) {
+                print("download caisseNameList ok");
+              }
+            });
+          }
+        } else {
+          dataCloudList.map((e) async {
+            if (dataUpdateList.isNotEmpty) {
+              for (var element in dataUpdateList) {
+                // print('Sync up stock ${element.sync}');
+                if (e.created.millisecondsSinceEpoch ==
+                    element.created.millisecondsSinceEpoch) {
+                  final dataItem = CaisseNameModel(
+                    id: e.id,
+                    nomComplet: element.nomComplet,
+                    rccm: element.rccm,
+                    idNat: element.idNat,
+                    addresse: element.addresse,
+                    created: element.created,
+                    business: element.business,
+                    sync: "sync",
+                    async: element.async,
+                  );
+                  await caisseNameApi.updateData(dataItem).then((value) async {
+                    CaisseNameModel dataModel = dataList
+                        .where((p0) => p0.nomComplet == value.nomComplet)
+                        .last;
+                    final dataItem = CaisseNameModel(
+                      id: dataModel.id,
+                      nomComplet: dataModel.nomComplet,
+                      rccm: dataModel.rccm,
+                      idNat: dataModel.idNat,
+                      addresse: dataModel.addresse,
+                      created: dataModel.created,
+                      business: dataModel.business,
+                      sync: "sync",
+                      async: dataModel.async,
+                    );
+                    await caisseNameStore.updateData(dataItem).then((value) {
+                      caisseNameList.clear();
+                      getList();
+                      if (kDebugMode) {
+                        print('Sync up caisseNameList ok');
+                      }
+                    });
+                  });
+                }
+              }
+            }
+          }).toList();
+        }
+
+        _isLoading.value = false;
+      }
+    } catch (e) {
+      _isLoading.value = false;
+      Get.snackbar("Erreur de la synchronisation", "$e",
           backgroundColor: Colors.red,
           icon: const Icon(Icons.check),
           snackPosition: SnackPosition.TOP);

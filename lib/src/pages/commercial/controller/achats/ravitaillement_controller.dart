@@ -50,11 +50,11 @@ class RavitaillementController extends GetxController {
   }
 
   void clear() {
-    quantity == null;
+    quantity = null;
     // priceAchatUnit == null;
-    date == null;
-    telephone == null;
-    succursale == null;
+    date = null;
+    telephone = null;
+    succursale = null;
     controlleridProduct.clear();
     controllerquantity.clear();
     controllerpriceAchatUnit.clear();
