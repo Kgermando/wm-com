@@ -101,7 +101,7 @@ class HistoryLivraisonController extends GetxController
             ); 
             await livraisonHistoryApi.insertData(dataItem).then((value) async {
               LivraisonHistoryModel dataModel =
-                  dataList.where((p0) => p0.idProduct == value.idProduct).last;
+                  dataList.where((p0) => p0.idProduct == value.idProduct).first;
               final dataItem = LivraisonHistoryModel(
                 id: dataModel.id,
                 idProduct: dataModel.idProduct,
@@ -193,9 +193,9 @@ class HistoryLivraisonController extends GetxController
                   await livraisonHistoryApi
                       .updateData(dataItem)
                       .then((value) async {
-                    LivraisonHistoryModel dataModel = dataList
+                    LivraisonHistoryModel dataModel = dataUpdateList
                         .where((p0) => p0.idProduct == value.idProduct)
-                        .last;
+                        .first;
                     final dataItem = LivraisonHistoryModel(
                       id: dataModel.id,
                       idProduct: dataModel.idProduct,

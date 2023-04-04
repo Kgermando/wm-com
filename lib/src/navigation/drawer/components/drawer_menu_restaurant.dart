@@ -20,7 +20,7 @@ class DrawerMenuRestaurant extends GetView<DepartementNotifyCOntroller> {
         child: profilController.obx(
             onLoading: loadingDrawer(),
             onError: (error) => loadingError(context, error!), (user) {
-      return Obx(() => ListView(
+      return ListView(
         shrinkWrap: true,
         children: [
           InkWell(
@@ -102,7 +102,7 @@ class DrawerMenuRestaurant extends GetView<DepartementNotifyCOntroller> {
               currentRoute: currentRoute,
             )
         ],
-      )) ;
+      ) ;
     }));
   }
 }

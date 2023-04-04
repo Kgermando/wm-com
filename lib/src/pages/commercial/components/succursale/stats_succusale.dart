@@ -29,12 +29,12 @@ class _StatsSuccursaleState extends State<StatsSuccursale> {
   
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: Responsive.isMobile(context) ? 0.0 : p10),
-      child: SingleChildScrollView(
-        controller: ScrollController(),
-        physics: const ScrollPhysics(),
+    return SingleChildScrollView(
+      controller: ScrollController(),
+      physics: const ScrollPhysics(),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: Responsive.isMobile(context) ? 0.0 : p10),
         child: GetBuilder(
             builder: (SuccursaleController controller) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,

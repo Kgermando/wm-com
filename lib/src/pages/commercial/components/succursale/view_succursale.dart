@@ -33,12 +33,12 @@ class _ViewSuccursaleState extends State<ViewSuccursale> {
   @override
   Widget build(BuildContext context) {
     int userRole = int.parse(widget.profilController.user.role);
-    return Padding(
-      padding: EdgeInsets.symmetric(
-          horizontal: Responsive.isMobile(context) ? 0.0 : p10),
-      child: SingleChildScrollView(
-        controller: ScrollController(),
-        physics: const ScrollPhysics(),
+    return SingleChildScrollView(
+      controller: ScrollController(),
+      physics: const ScrollPhysics(),
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+            horizontal: Responsive.isMobile(context) ? 0.0 : p10),
         child: Column(
           children: [
             Card(

@@ -274,7 +274,7 @@ class AnnuaireController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = AnnuaireModel(
                 id: dataModel.id,
                 categorie: dataModel.categorie,
@@ -359,11 +359,11 @@ class AnnuaireController extends GetxController
                     async: element.async,
                   );
                   await annuaireApi.updateData(dataItem).then((value) async {
-                    AnnuaireModel dataModel = dataList
+                    AnnuaireModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = AnnuaireModel(
                       id: dataModel.id,
                       categorie: dataModel.categorie,

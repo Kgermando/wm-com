@@ -231,7 +231,7 @@ class ProdModelLivraisonController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = ProductModel(
                 id: dataModel.id,
                 service: dataModel.service,
@@ -300,11 +300,11 @@ class ProdModelLivraisonController extends GetxController
                   await prodModellivraisonApi
                       .updateData(dataItem)
                       .then((value) async {
-                    ProductModel dataModel = dataList
+                    ProductModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = ProductModel(
                       id: dataModel.id,
                       service: dataModel.service,

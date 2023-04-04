@@ -167,7 +167,7 @@ class AgendaController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = AgendaModel(
                 id: dataModel.id,
                 title: dataModel.title,
@@ -228,11 +228,11 @@ class AgendaController extends GetxController
                     async: element.async,
                   );
                   await agendaApi.updateData(dataItem).then((value) async {
-                    AgendaModel dataModel = dataList
+                    AgendaModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = AgendaModel(
                       id: dataModel.id,
                       title: dataModel.title,

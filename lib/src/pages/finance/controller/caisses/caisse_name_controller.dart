@@ -181,7 +181,7 @@ class CaisseNameController extends GetxController
             await caisseNameApi.insertData(dataItem).then((value) async {
               CaisseNameModel dataModel = dataList
                   .where((p0) => p0.nomComplet == value.nomComplet)
-                  .last;
+                  .first;
               final dataItem = CaisseNameModel(
                 id: dataModel.id,
                 nomComplet: dataModel.nomComplet,
@@ -242,9 +242,9 @@ class CaisseNameController extends GetxController
                     async: element.async,
                   );
                   await caisseNameApi.updateData(dataItem).then((value) async {
-                    CaisseNameModel dataModel = dataList
+                    CaisseNameModel dataModel = dataUpdateList
                         .where((p0) => p0.nomComplet == value.nomComplet)
-                        .last;
+                        .first;
                     final dataItem = CaisseNameModel(
                       id: dataModel.id,
                       nomComplet: dataModel.nomComplet,

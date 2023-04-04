@@ -228,7 +228,7 @@ class ProdModelTerrasseController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = ProductModel(
                 id: dataModel.id,
                 service: dataModel.service,
@@ -295,11 +295,11 @@ class ProdModelTerrasseController extends GetxController
                     async: element.async,
                   );
                   await produitModelTerrasseApi.updateData(dataItem).then((value) async {
-                    ProductModel dataModel = dataList
+                    ProductModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = ProductModel(
                       id: dataModel.id,
                       service: dataModel.service,

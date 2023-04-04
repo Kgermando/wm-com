@@ -541,7 +541,7 @@ class PersonnelsController extends GetxController
             );
             await personnelsApi.insertData(dataItem).then((value) async {
               AgentModel dataModel = dataList
-                  .where((p0) => p0.matricule == value.matricule).last;
+                  .where((p0) => p0.matricule == value.matricule).first;
               final dataItem = AgentModel(
                 id: dataModel.id,
                 nom: dataModel.nom,
@@ -659,9 +659,9 @@ class PersonnelsController extends GetxController
                     async: element.async,
                   );
                   await personnelsApi.updateData(dataItem).then((value) async {
-                    AgentModel dataModel = dataList
+                    AgentModel dataModel = dataUpdateList
                         .where((p0) => p0.matricule == value.matricule)
-                        .last;
+                        .first;
                     final dataItem = AgentModel(
                       id: dataModel.id,
                       nom: dataModel.nom,

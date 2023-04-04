@@ -56,42 +56,37 @@ class _CartPageState extends State<CartPage> {
                   (state) => SingleChildScrollView(
                       controller: ScrollController(),
                       physics: const ScrollPhysics(),
-                      child: Column(
-                        children: [
-                          const BarreConnectionWidget(),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    const TitleWidget(title: 'Panier'),
-                                    IconButton(
-                                        onPressed: () {
-                                          // Navigator.pushNamed(
-                                          //     context, ComRoutes.comCart);
-                                          Get.toNamed(ComRoutes.comCart);
-                                          controller.getList();
-                                        },
-                                        icon: const Icon(Icons.refresh,
-                                            color: Colors.green))
-                                  ],
-                                ),
-                                Obx(() => ListView.builder(
-                                    shrinkWrap: true,
-                                    itemCount: state!.length,
-                                    itemBuilder: (context, index) {
-                                      final cart = state[index];
-                                      return CartItemWidget(
-                                          cart: cart, controller: controller);
-                                    })),
-                                Obx(() => SizedBox(
-                                    height: p50, child: totalCart(controller)))
+                                const TitleWidget(title: 'Panier'),
+                                IconButton(
+                                    onPressed: () {
+                                      // Navigator.pushNamed(
+                                      //     context, ComRoutes.comCart);
+                                      Get.toNamed(ComRoutes.comCart);
+                                      controller.getList();
+                                    },
+                                    icon: const Icon(Icons.refresh,
+                                        color: Colors.green))
                               ],
                             ),
-                          ),
-                        ],
+                            Obx(() => ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: state!.length,
+                                itemBuilder: (context, index) {
+                                  final cart = state[index];
+                                  return CartItemWidget(
+                                      cart: cart, controller: controller);
+                                })),
+                            Obx(() => SizedBox(
+                                height: p50, child: totalCart(controller)))
+                          ],
+                        ),
                       ))))
         ],
       ),

@@ -86,7 +86,7 @@ class VenteEffectueController extends GetxController
             );
             await venteCartApi.insertData(dataItem).then((value) async {
               VenteCartModel dataModel =
-                  dataList.where((p0) => p0.idProductCart == value.idProductCart).last;
+                  dataList.where((p0) => p0.idProductCart == value.idProductCart).first;
               final dataItem = VenteCartModel(
                 id: dataModel.id,
                 idProductCart: dataModel.idProductCart,
@@ -163,7 +163,8 @@ class VenteEffectueController extends GetxController
                   );
                   await venteCartApi.updateData(dataItem).then((value) async {
                     VenteCartModel dataModel =
-                        venteCartList.where((p0) => p0.idProductCart == value.idProductCart).last;
+                        dataUpdateList
+                        .where((p0) => p0.idProductCart == value.idProductCart).first;
                     final dataItem = VenteCartModel(
                       id: dataModel.id,
                       idProductCart: dataModel.idProductCart,

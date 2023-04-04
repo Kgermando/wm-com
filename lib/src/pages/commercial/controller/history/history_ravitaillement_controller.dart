@@ -96,7 +96,7 @@ class HistoryRavitaillementController extends GetxController
                 .insertData(dataItem)
                 .then((value) async {
               HistoryRavitaillementModel dataModel =
-                  dataList.where((p0) => p0.idProduct == value.idProduct).last;
+                  dataList.where((p0) => p0.idProduct == value.idProduct).first;
               final dataItem = HistoryRavitaillementModel(
                 id: dataModel.id,
                 idProduct: dataModel.idProduct,
@@ -179,9 +179,9 @@ class HistoryRavitaillementController extends GetxController
                   await historyRavitaillementApi
                       .updateData(dataItem)
                       .then((value) async {
-                    HistoryRavitaillementModel dataModel = dataList
+                    HistoryRavitaillementModel dataModel = dataUpdateList
                         .where((p0) => p0.idProduct == value.idProduct)
-                        .last;
+                        .first;
                     final dataItem = HistoryRavitaillementModel(
                       id: dataModel.id,
                       idProduct: dataModel.idProduct,

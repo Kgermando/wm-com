@@ -177,7 +177,7 @@ class PaiementReservationController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = PaiementReservationModel(
                 id: dataModel.id,
                 reference: dataModel.reference,
@@ -247,11 +247,11 @@ class PaiementReservationController extends GetxController
                   await paiementReservationApi
                       .updateData(dataItem)
                       .then((value) async {
-                    PaiementReservationModel dataModel = dataList
+                    PaiementReservationModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = PaiementReservationModel(
                       id: dataModel.id,
                       reference: dataModel.reference,

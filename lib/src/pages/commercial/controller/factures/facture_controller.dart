@@ -156,11 +156,11 @@ class FactureController extends GetxController
                     async: element.async,
                   );
                   await factureApi.updateData(dataItem).then((value) async {
-                    FactureCartModel dataModel = dataList
+                    FactureCartModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = FactureCartModel(
                       id: dataModel.id,
                       cart: dataModel.cart,

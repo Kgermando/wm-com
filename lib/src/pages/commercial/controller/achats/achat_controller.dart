@@ -324,7 +324,7 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
             );
             await achatApi.insertData(dataItem).then((value) async {
               AchatModel achatModel =
-                  achatList.where((p0) => p0.idProduct == value.idProduct).last;
+                  achatList.where((p0) => p0.idProduct == value.idProduct).first;
               final dataItem = AchatModel(
                 id: achatModel.id,
                 idProduct: achatModel.idProduct,
@@ -377,7 +377,7 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
               async: element.async,
             );
             await stockStore.insertData(dataItem).then((value) {
-              print("download stock ok");
+              print("download achatList ok");
             });
           }
         } else {
@@ -445,9 +445,9 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
                   print('Sync up e.id ${element.business}'); 
                   print('Sync up e.id ${element.async}');
                   await achatApi.updateData(dataItem).then((value) async {
-                    AchatModel achatModel = achatList
+                    AchatModel achatModel = dataUpdateList
                         .where((p0) => p0.idProduct == value.idProduct)
-                        .last;
+                        .first;
                     print('Sync ${achatModel.sync}');
                     final dataItem = AchatModel(
                       id: achatModel.id,

@@ -93,7 +93,7 @@ class VenteEffectueTerrasseController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = VenteRestaurantModel(
                 id: dataModel.id,
                 identifiant: dataModel.identifiant,
@@ -166,11 +166,11 @@ class VenteEffectueTerrasseController extends GetxController
                     async: element.async,
                   );
                   await venteEffectueTerrasseApi.updateData(dataItem).then((value) async {
-                    VenteRestaurantModel dataModel = dataList
+                    VenteRestaurantModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = VenteRestaurantModel(
                       id: dataModel.id,
                       identifiant: dataModel.identifiant,

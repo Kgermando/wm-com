@@ -311,7 +311,7 @@ class SuccursaleController extends GetxController
             );
             await succursaleApi.insertData(dataItem).then((value) async {
               SuccursaleModel dataModel =
-                  dataList.where((p0) => p0.name == value.name).last;
+                  dataList.where((p0) => p0.name == value.name).first;
               final dataItem = SuccursaleModel(
                 id: dataModel.id,
                 name: dataModel.name,
@@ -348,7 +348,7 @@ class SuccursaleController extends GetxController
               async: element.async,
             );
             await succursaleStore.insertData(dataItem).then((value) {
-              print("download stock ok");
+              print("download succursaleList ok");
             });
           }
         } else {
@@ -370,8 +370,8 @@ class SuccursaleController extends GetxController
                   );
                   await succursaleApi.updateData(dataItem).then((value) async {
                    SuccursaleModel dataModel =
-                        succursaleList
-                        .where((p0) => p0.name == value.name).last; 
+                        dataUpdateList
+                        .where((p0) => p0.name == value.name).first; 
                     final dataItem = SuccursaleModel(
                       id: dataModel.id,
                       name: dataModel.name,

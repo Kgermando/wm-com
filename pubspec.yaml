@@ -68,7 +68,7 @@ dependencies:
   calendar_date_picker2: ^0.4.6
   syncfusion_flutter_xlsio: ^21.1.35
   internet_connection_checker: ^1.0.0+1
-  firebase_core: ^2.8.0 # Window & Linux
+  firebase_core: ^2.8.0 # sauf Window & Linux  
 
 dev_dependencies:
   flutter_test:

@@ -85,7 +85,7 @@ class GainCartController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = GainModel(
                 id: dataModel.id,
                 sum: dataModel.sum,
@@ -143,11 +143,11 @@ class GainCartController extends GetxController
                     async: element.async,
                   );
                   await gainApi.updateData(dataItem).then((value) async {
-                    GainModel dataModel = dataList
+                    GainModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = GainModel(
                       id: dataModel.id,
                       sum: dataModel.sum,

@@ -207,7 +207,7 @@ class ProduitModelController extends GetxController
             await produitModelApi.insertData(dataItem).then((value) async {
               ProductModel dataModel = dataList
                   .where((p0) => p0.idProduct == value.idProduct)
-                  .last;
+                  .first;
               final dataItem = ProductModel(
                 id: dataModel.id,
                 service: dataModel.service,
@@ -275,9 +275,9 @@ class ProduitModelController extends GetxController
                   await produitModelApi
                       .updateData(dataItem)
                       .then((value) async {
-                    ProductModel dataModel = dataList
+                    ProductModel dataModel = dataUpdateList
                         .where((p0) => p0.idProduct == value.idProduct)
-                        .last;
+                        .first;
                     final dataItem = ProductModel(
                       id: dataModel.id,
                       service: dataModel.service,

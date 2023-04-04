@@ -147,7 +147,7 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
           succursale: succursale.toString(),
           business: user.business,
           sync: "update",
-          async: "new");
+          async: "update");
       await usersStore.updateData(userModel).then((value) {
         clear();
         usersList.clear();
@@ -180,6 +180,7 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
         if (dataList.isNotEmpty) {
           for (var element in dataList) {
             final dataItem = UserModel(
+              photo: element.photo,
               nom: element.nom,
               prenom: element.prenom,
               email: element.email,
@@ -200,9 +201,10 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
             await userApi.insertData(dataItem).then((value) async {
               UserModel dataModel = dataList
                   .where((p0) => p0.matricule == value.matricule)
-                  .last;
+                  .first;
               final dataItem = UserModel(
                 id: dataModel.id,
+                photo: dataModel.photo,
                 nom: dataModel.nom,
                 prenom: dataModel.prenom,
                 email: dataModel.email,
@@ -235,6 +237,7 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
         if (usersList.isEmpty) {
           for (var element in dataCloudList) {
             final dataItem = UserModel(
+              photo: element.photo,
               nom: element.nom,
               prenom: element.prenom,
               email: element.email,
@@ -264,8 +267,9 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
               for (var element in dataUpdateList) {
                 // print('Sync up stock ${element.sync}');
                 if (e.matricule == element.matricule) {
-                  final dataItem = UserModel(
+                  final dataItem = UserModel( 
                     id: e.id,
+                    photo: element.photo,
                     nom: element.nom,
                     prenom: element.prenom,
                     email: element.email,
@@ -284,11 +288,12 @@ class UsersController extends GetxController with StateMixin<List<UserModel>> {
                     async: element.async,
                   );
                   await userApi.updateData(dataItem).then((value) async {
-                     UserModel dataModel = dataList
+                     UserModel dataModel = dataUpdateList
                         .where((p0) => p0.matricule == value.matricule)
-                        .last;
+                        .first;
                     final dataItem = UserModel(
                       id: dataModel.id,
+                      photo: dataModel.photo,
                       nom: dataModel.nom,
                       prenom: dataModel.prenom,
                       email: dataModel.email,

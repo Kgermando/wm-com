@@ -136,7 +136,7 @@ class FactureCreanceController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = CreanceCartModel(
                 id: dataModel.id,
                 cart: dataModel.cart,
@@ -211,11 +211,11 @@ class FactureCreanceController extends GetxController
                   await creanceFactureApi
                       .updateData(dataItem)
                       .then((value) async {
-                    CreanceCartModel dataModel = dataList
+                    CreanceCartModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = CreanceCartModel(
                       id: dataModel.id,
                       cart: dataModel.cart,

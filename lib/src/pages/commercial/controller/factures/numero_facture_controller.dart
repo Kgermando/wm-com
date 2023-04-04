@@ -86,7 +86,7 @@ class NumeroFactureController extends GetxController
             ); 
             await numberFactureApi.insertData(dataItem).then((value) async {
               NumberFactureModel dataModel =
-                  dataList.where((p0) => p0.number == value.number).last;
+                  dataList.where((p0) => p0.number == value.number).first;
               final dataItem = NumberFactureModel(
                 id: dataModel.id,
                 number: dataModel.number,
@@ -145,9 +145,9 @@ class NumeroFactureController extends GetxController
                   await numberFactureApi
                       .updateData(dataItem)
                       .then((value) async {
-                    NumberFactureModel dataModel = dataList
+                    NumberFactureModel dataModel = dataUpdateList
                         .where((p0) => p0.number == value.number)
-                        .last;
+                        .first;
                     final dataItem = NumberFactureModel(
                       id: dataModel.id,
                       number: dataModel.number,

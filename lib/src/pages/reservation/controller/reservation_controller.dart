@@ -230,7 +230,7 @@ class ReservationController extends GetxController
                   .where((p0) =>
                       p0.created.millisecondsSinceEpoch ==
                       value.created.millisecondsSinceEpoch)
-                  .last;
+                  .first;
               final dataItem = ReservationModel(
                 id: dataModel.id,
                 client: dataModel.client,
@@ -315,11 +315,11 @@ class ReservationController extends GetxController
                     async: element.async,
                   );
                   await reservationApi.updateData(dataItem).then((value) async {
-                    ReservationModel dataModel = dataList
+                    ReservationModel dataModel = dataUpdateList
                         .where((p0) =>
                             p0.created.millisecondsSinceEpoch ==
                             value.created.millisecondsSinceEpoch)
-                        .last;
+                        .first;
                     final dataItem = ReservationModel(
                       id: dataModel.id,
                       client: dataModel.client,

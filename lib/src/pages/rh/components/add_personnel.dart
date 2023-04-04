@@ -1,4 +1,5 @@
 import 'package:cached_network_image_builder/cached_network_image_builder.dart';
+import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter_quill/flutter_quill.dart' as flutter_quill;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -442,60 +443,61 @@ class _AddPersonnelState extends State<AddPersonnel> {
         ));
   }
 
-  Widget dateNaissanceWidget() {
-    DateTime? dateTime;
+  Widget dateNaissanceWidget() { 
     return Container(
         margin: const EdgeInsets.only(bottom: p20),
         child: TextButton.icon(
             onPressed: () async {
-                  dateTime = await showOmniDateTimePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  type: OmniDateTimePickerType.date,
-                  firstDate: DateTime(1600).subtract(const Duration(days: 3652)),
-                  lastDate: DateTime.now().add(
-                    const Duration(days: 3652),
-                  ),
-                  is24HourMode: false,
-                  isShowSeconds: false,
-                  minutesInterval: 1,
-                  secondsInterval: 1,
-                  borderRadius: const BorderRadius.all(Radius.circular(16)),
-                  constraints: const BoxConstraints(
-                    maxWidth: 350,
-                    maxHeight: 650,
-                  ),
-                  transitionBuilder: (context, anim1, anim2, child) {
-                    return FadeTransition(
-                      opacity: anim1.drive(
-                        Tween(
-                          begin: 0,
-                          end: 1,
-                        ),
+             DateTime? dateNaissance = await showOmniDateTimePicker(
+                context: context,
+                initialDate: DateTime.now(),
+                type: OmniDateTimePickerType.date,
+                firstDate: DateTime(1600).subtract(const Duration(days: 3652)),
+                lastDate: DateTime.now().add(
+                  const Duration(days: 3652),
+                ),
+                is24HourMode: false,
+                isShowSeconds: false,
+                minutesInterval: 1,
+                secondsInterval: 1,
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
+                constraints: const BoxConstraints(
+                  maxWidth: 350,
+                  maxHeight: 650,
+                ),
+                transitionBuilder: (context, anim1, anim2, child) {
+                  return FadeTransition(
+                    opacity: anim1.drive(
+                      Tween(
+                        begin: 0,
+                        end: 1,
                       ),
-                      child: child,
-                    );
-                  },
-                  transitionDuration: const Duration(milliseconds: 200),
-                  barrierDismissible: true,
-                  selectableDayPredicate: (dateTime) {
-                    // Disable 25th Feb 2023
-                    if (dateTime == DateTime(2023, 2, 25)) {
-                      return false;
-                    } else {
-                      return true;
-                    }
-                  },
-                );
+                    ),
+                    child: child,
+                  );
+                },
+                transitionDuration: const Duration(milliseconds: 200),
+                barrierDismissible: true,
+                selectableDayPredicate: (dateTime) {
+                  // Disable 25th Feb 2023
+                  if (dateTime == DateTime(2023, 2, 25)) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                },
+              );
 
-               setState(() {
-                  controller.dateNaissanceController = dateTime;
-                });
+              setState(() {
+                controller.dateNaissanceController = dateNaissance;
+              });
             },
             icon: const Icon(Icons.calendar_month),
             label: (controller.dateNaissanceController == null)
                 ? const Text("Date de naissance")
-                : Text("${controller.dateNaissanceController}")));
+                : ResponsiveChildWidget(
+                    child1: const Text("Date de naissance"),
+                    child2: Text("${controller.dateNaissanceController}"))));
   }
 
   Widget lieuNaissanceWidget() {
@@ -624,7 +626,7 @@ class _AddPersonnelState extends State<AddPersonnel> {
         margin: const EdgeInsets.only(bottom: p20),
         child: TextButton.icon(
             onPressed: () async {
-              DateTime? dateTime = await showOmniDateTimePicker(
+              DateTime? dateDebutContrat = await showOmniDateTimePicker(
                 context: context,
                 initialDate: DateTime.now(),
                 type: OmniDateTimePickerType.date,
@@ -664,14 +666,15 @@ class _AddPersonnelState extends State<AddPersonnel> {
                 },
               );
               setState(() {
-                controller.dateDebutContratController = dateTime;
+                controller.dateDebutContratController = dateDebutContrat;
               });
-              
             },
             icon: const Icon(Icons.calendar_month),
             label: (controller.dateNaissanceController == null)
                 ? const Text("Date Debut Contrat")
-                : Text("${controller.dateNaissanceController}"))); 
+                : ResponsiveChildWidget(
+                    child1: const Text("Date Debut Contrat"),
+                    child2: Text("${controller.dateNaissanceController}"))));
   }
 
   Widget dateFinContratWidget() {
@@ -679,7 +682,7 @@ class _AddPersonnelState extends State<AddPersonnel> {
         margin: const EdgeInsets.only(bottom: p20),
         child: TextButton.icon(
             onPressed: () async {
-              DateTime? dateTime = await showOmniDateTimePicker(
+              DateTime? dateFinContrat = await showOmniDateTimePicker(
                 context: context,
                 initialDate: DateTime.now(),
                 type: OmniDateTimePickerType.date,
@@ -719,15 +722,15 @@ class _AddPersonnelState extends State<AddPersonnel> {
                 },
               );
               setState(() {
-                controller.dateFinContratController = dateTime;
+                controller.dateFinContratController = dateFinContrat;
               });
-              
             },
             icon: const Icon(Icons.calendar_month),
             label: (controller.dateNaissanceController == null)
                 ? const Text("Date Fin Contrat")
-                : Text("${controller.dateNaissanceController}")));
- 
+                : ResponsiveChildWidget(
+                    child1: const Text("Date Fin Contrat"),
+                    child2: Text("${controller.dateNaissanceController}"))));
   }
 
   Widget fonctionOccupeWidget() {

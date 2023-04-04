@@ -88,10 +88,7 @@ class DepartementNotifyCOntroller extends GetxController {
       Get.put(AgendaController());
   final AnnuaireController annuaireController =
       Get.put(AnnuaireController());
-
-
-   // Reservations
-
+ 
   //  Livraison
   final CreanceLivraisonController creanceLivraisonController = Get.put(CreanceLivraisonController());
   final FactureLivraisonController factureLivraisonController = Get.put(FactureLivraisonController());
@@ -154,11 +151,20 @@ class DepartementNotifyCOntroller extends GetxController {
   void getDataNotify() async {
     String? idToken = getStorge.read(InfoSystem.keyIdToken);
     if (idToken != null) {
-      timerCommercial = Timer.periodic(const Duration(seconds: 1), (timer) {
+      timerCommercial = Timer.periodic(const Duration(seconds: 1), (timer) async {
         if (kDebugMode) {
           print("notify Commercial");
         }
-        getCountMail();
+        if (!GetPlatform.isWeb) {
+          bool result = await InternetConnectionChecker().hasConnection;
+          if (result == true) {
+            getCountMail();
+          }
+        }
+        if (GetPlatform.isWeb) {
+          getCountMail();
+        }
+        
         getCountAgenda();
         getCountCart();
       });
@@ -172,23 +178,10 @@ class DepartementNotifyCOntroller extends GetxController {
     update();
   }
 
-  void getCountMail() async {
-    if (!GetPlatform.isWeb) {
-      bool result = await InternetConnectionChecker().hasConnection;
-      if (result == true) {
-        NotifyModel notifySum =
-            await mailsNotifyApi.getCount(profilController.user.matricule);
-        _mailsItemCount.value = notifySum.count;
-      } else {
-        NotifyModel notifySum = const NotifyModel(count: 0);
-        _mailsItemCount.value = notifySum.count;
-      }
-    }
-    if (!GetPlatform.isWeb) {
-      NotifyModel notifySum =
-          await mailsNotifyApi.getCount(profilController.user.matricule);
-      _mailsItemCount.value = notifySum.count;
-    }
+  void getCountMail() async { 
+    NotifyModel notifySum =
+        await mailsNotifyApi.getCount(profilController.user.matricule);
+    _mailsItemCount.value = notifySum.count;
 
     update();
   }
