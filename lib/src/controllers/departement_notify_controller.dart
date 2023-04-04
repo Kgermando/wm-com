@@ -194,7 +194,9 @@ class DepartementNotifyCOntroller extends GetxController {
 
   void syncData() async {
     _isLoading.value = true;
-    print("tap syncData");
+    if (kDebugMode) {
+      print("tap syncData");
+    }
 
     // Commercial
     achatController.syncData();

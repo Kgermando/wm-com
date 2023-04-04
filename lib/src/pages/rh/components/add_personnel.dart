@@ -1,5 +1,4 @@
 import 'package:cached_network_image_builder/cached_network_image_builder.dart';
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter_quill/flutter_quill.dart' as flutter_quill;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';

@@ -3,8 +3,6 @@ import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:wm_com/src/global/api/commerciale/bon_livraison_api.dart';
 import 'package:wm_com/src/global/api/commerciale/livraison_history_api.dart';
-import 'package:wm_com/src/global/store/commercial/bon_livraison_store.dart';
-import 'package:wm_com/src/global/store/commercial/history_livraison_store.dart';
 import 'package:wm_com/src/global/store/commercial/stock_store.dart';
 import 'package:wm_com/src/models/commercial/achat_model.dart';
 import 'package:wm_com/src/models/commercial/bon_livraison.dart';
@@ -110,7 +108,6 @@ class BonLivraisonController extends GetxController
         sync: "updated",
         async: "updated",
       );
-      print("bonLivraisonModel ${bonLivraisonModel.id} ");
       await bonLivraisonApi.updateData(bonLivraisonModel).then((value) async {
         
         var achatDataList = achatList

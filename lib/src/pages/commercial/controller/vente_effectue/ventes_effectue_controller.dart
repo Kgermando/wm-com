@@ -115,7 +115,7 @@ class VenteEffectueController extends GetxController
           }
         }
       } else {
-        print('Sync up dataUpdateList $dataUpdateList');
+        // print('Sync up dataUpdateList $dataUpdateList');
         if (venteCartList.isEmpty) {
           for (var element in dataCloudList) {
             final dataItem = VenteCartModel( 
@@ -135,7 +135,9 @@ class VenteEffectueController extends GetxController
               async: element.async,
             );
             await venteEffectueStore.insertData(dataItem).then((value) {
-              print("download venteCartList ok");
+              if (kDebugMode) {
+                print("download venteCartList ok");
+              }
             });
           }
         } else {

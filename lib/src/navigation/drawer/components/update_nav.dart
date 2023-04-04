@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:wm_com/src/controllers/network_controller.dart';
 import 'package:wm_com/src/navigation/drawer/drawer_widget.dart';
 import 'package:wm_com/src/pages/update/controller/update_controller.dart';
-import 'package:wm_com/src/widgets/loading.dart';
 
 class UpdateNav extends StatefulWidget {
   const UpdateNav({super.key, required this.currentRoute});

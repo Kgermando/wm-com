@@ -11,7 +11,6 @@ import 'package:wm_com/src/navigation/header/header_bar.dart';
 import 'package:wm_com/src/pages/commercial/components/cart/cart_item_widget.dart';
 import 'package:wm_com/src/pages/commercial/controller/cart/cart_controller.dart';
 import 'package:wm_com/src/routes/routes.dart';
-import 'package:wm_com/src/widgets/barre_connection_widget.dart';
 import 'package:wm_com/src/widgets/loading.dart';
 import 'package:wm_com/src/widgets/title_widget.dart';
 

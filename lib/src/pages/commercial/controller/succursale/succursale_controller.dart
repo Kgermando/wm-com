@@ -334,7 +334,7 @@ class SuccursaleController extends GetxController
           }
         }
       } else {
-        print('Sync up dataUpdateList $dataUpdateList');
+        // print('Sync up dataUpdateList $dataUpdateList');
         if (succursaleList.isEmpty) {
           for (var element in dataCloudList) {
             final dataItem = SuccursaleModel(
@@ -348,14 +348,16 @@ class SuccursaleController extends GetxController
               async: element.async,
             );
             await succursaleStore.insertData(dataItem).then((value) {
-              print("download succursaleList ok");
+              if (kDebugMode) {
+                print("download succursaleList ok");
+              }
             });
           }
         } else {
           dataCloudList.map((e) async {
             if (dataUpdateList.isNotEmpty) {
               for (var element in dataUpdateList) {
-                print('Sync up stock ${element.sync}');
+                // print('Sync up stock ${element.sync}');
                 if (e.name == element.name) { 
                   final dataItem = SuccursaleModel(
                     id: e.id,
@@ -387,7 +389,7 @@ class SuccursaleController extends GetxController
                       succursaleList.clear();
                       getList();
                       if (kDebugMode) {
-                        print('Sync up stock ok');
+                        print('Sync up succursaleList ok');
                       }
                     });
                   });

@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:wm_com/src/controllers/departement_notify_controller.dart';
 import 'package:wm_com/src/controllers/network_controller.dart';
 import 'package:wm_com/src/pages/commercial/components/factures/pdf_a6/creance_cart_a6_pdf.dart';
 import 'package:wm_com/src/pages/commercial/components/factures/pdf_a6/facture_cart_a6_pdf.dart';
