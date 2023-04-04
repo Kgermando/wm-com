@@ -172,22 +172,24 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
       var remisePourcentToMontant = prixVenteUnit - remisePourcent;
 
       final dataItem = AchatModel(
-          idProduct: idProduct.toString(),
-          quantity: quantityAchat.toString(),
-          quantityAchat: quantityAchat.toString(),
-          priceAchatUnit: priceAchatUnit.toString(),
-          prixVenteUnit: prixVenteUnit.toString(),
-          unite: unite.toString(),
-          tva: tva.toString(),
-          remise: remisePourcentToMontant.toString(),
-          qtyRemise: qtyRemise.toString(),
-          qtyLivre: quantityAchat.toString(),
-          succursale: profilController.user.succursale,
-          signature: profilController.user.matricule,
-          created: data.created,
-          business: data.business,
-          sync: "update",
-          async: "update");
+        id: data.id,
+        idProduct: idProduct.toString(),
+        quantity: quantityAchat.toString(),
+        quantityAchat: quantityAchat.toString(),
+        priceAchatUnit: priceAchatUnit.toString(),
+        prixVenteUnit: prixVenteUnit.toString(),
+        unite: unite.toString(),
+        tva: tva.toString(),
+        remise: remisePourcentToMontant.toString(),
+        qtyRemise: qtyRemise.toString(),
+        qtyLivre: quantityAchat.toString(),
+        succursale: profilController.user.succursale,
+        signature: profilController.user.matricule,
+        created: data.created,
+        business: data.business,
+        sync: "update",
+        async: "update",
+      );
       await stockStore.updateData(dataItem).then((value) {
         clear();
         getList();
@@ -388,6 +390,25 @@ class AchatController extends GetxController with StateMixin<List<AchatModel>> {
                       double.parse(e.quantity) - double.parse(element.quantity);
                   double qtyDispCloud = double.parse(e.quantity) - qtyLocalVendus;
                   double qtyAchatCloud = double.parse(e.quantityAchat) + double.parse(element.quantityAchat);
+                  // {
+                  //   "id" : 73,
+                  //   "idProduct": "CIMENT-CILU-SACS",
+                  //   "quantity": "500",
+                  //   "quantityAchat": "1400",
+                  //   "priceAchatUnit": "8",
+                  //   "prixVenteUnit": "10",
+                  //   "unite": "SACS",
+                  //   "tva": "0.0",
+                  //   "remise": "10",
+                  //   "qtyRemise": "0",
+                  //   "qtyLivre": "700",
+                  //   "succursale": "maison 1",
+                  //   "signature": "admin",
+                  //   "created": "2023-04-03 14:19:55.501644",
+                  //   "business": "commercial",
+                  //   "sync": "sync",
+                  //   "async": "async"
+                  // }
                   final dataItem = AchatModel(
                     id: e.id,
                     idProduct: e.idProduct,

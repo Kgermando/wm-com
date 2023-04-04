@@ -88,22 +88,24 @@ class _VenteEffectueState extends State<VenteEffectue> {
                                                 dialogBackgroundColor:
                                                     Colors.white,
                                               );
-                                              DateTime? date1 = values![0];
-                                              DateTime? date2 = values[1];
-                                              var reppoting = state!
-                                                  .where((element) =>
-                                                      element.created
-                                                              .millisecondsSinceEpoch >=
-                                                          date1!
-                                                              .millisecondsSinceEpoch &&
-                                                      element.created
-                                                              .millisecondsSinceEpoch <=
-                                                          date2!
-                                                              .millisecondsSinceEpoch)
-                                                  .toList();
-                                              VenteEffectueComXlsx()
-                                                  .exportToExcel(
-                                                      title, reppoting);
+                                              setState(() {
+                                                DateTime? date1 = values![0];
+                                                DateTime? date2 = (values[1] == null) ? DateTime.now() : values[1];
+                                                var reppoting = state!
+                                                    .where((element) =>
+                                                        element.created
+                                                                .millisecondsSinceEpoch >=
+                                                            date1!
+                                                                .millisecondsSinceEpoch &&
+                                                        element.created
+                                                                .millisecondsSinceEpoch <=
+                                                            date2!
+                                                                .millisecondsSinceEpoch)
+                                                    .toList();
+                                                VenteEffectueComXlsx()
+                                                    .exportToExcel(
+                                                        title, reppoting, monnaieStorage.monney);
+                                              });
                                             },
                                             icon:
                                                 const Icon(Icons.install_desktop),

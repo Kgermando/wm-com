@@ -5,7 +5,7 @@ import 'package:wm_com/src/constants/app_theme.dart';
 import 'package:wm_com/src/constants/responsive.dart';
 import 'package:wm_com/src/helpers/monnaire_storage.dart';
 import 'package:wm_com/src/models/commercial/vente_cart_model.dart';
-import 'package:wm_com/src/navigation/drawer/drawer_menu.dart';
+import 'package:wm_com/src/navigation/drawer/components/drawer_menu_commercial.dart';
 import 'package:wm_com/src/navigation/header/header_bar.dart';
 import 'package:wm_com/src/pages/commercial/controller/vente_effectue/ventes_effectue_controller.dart';
 import 'package:wm_com/src/routes/routes.dart';
@@ -39,7 +39,7 @@ class _DetailVenteEffectueState extends State<DetailVenteEffectue> {
       key: scaffoldKey,
       appBar: headerBar(
           context, scaffoldKey, title, widget.venteCartModel.idProductCart),
-      drawer: const DrawerMenu(),
+      drawer: const DrawerMenuCommercial(),
       body: controller.obx(
           onLoading: loadingPage(context),
           onEmpty: const Text('Aucune donnée'),
@@ -49,7 +49,7 @@ class _DetailVenteEffectueState extends State<DetailVenteEffectue> {
                 children: [
                   Visibility(
                       visible: !Responsive.isMobile(context),
-                      child: const Expanded(flex: 1, child: DrawerMenu())),
+                      child: const Expanded(flex: 1, child: DrawerMenuCommercial())),
                   Expanded(
                       flex: 5,
                       child: SingleChildScrollView(

@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:wm_com/src/models/commercial/vente_cart_model.dart';
 
 class VenteEffectueComXlsx {
-  Future<void> exportToExcel(String name, List<VenteCartModel> dataList) async {
+  Future<void> exportToExcel(String name, List<VenteCartModel> dataList, String money) async {
     try {
       var excel = Excel.createExcel();
       String title = "Rapport de ventes $name";
@@ -19,6 +19,7 @@ class VenteEffectueComXlsx {
         "Designation",
         "Prix",
         "Prix total",
+        "Devise",
         "Signature"
       ], 0);
 
@@ -31,6 +32,7 @@ class VenteEffectueComXlsx {
           dataList[i].idProductCart,
           "$price",
           dataList[i].priceTotalCart,
+          money,
           dataList[i].signature
         ];
         sheetObject.insertRowIterables(data, i + 1);
